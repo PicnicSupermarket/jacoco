@@ -5,6 +5,9 @@ JaCoCo Java Code Coverage Library
 [![Build status](https://ci.appveyor.com/api/projects/status/g28egytv4tb898d7/branch/master?svg=true)](https://ci.appveyor.com/project/JaCoCo/jacoco/branch/master)
 [![Maven Central](https://img.shields.io/maven-central/v/org.jacoco/jacoco.svg)](http://search.maven.org/#search|ga|1|g%3Aorg.jacoco)
 
+**This is a fork of JaCoCo** to experiment with introducing line execution counts. Essentially,
+we will convert the `boolean[]` probes to `int[]`. 
+
 JaCoCo is a free Java code coverage library distributed under the Eclipse Public
 License. Check the [project homepage](http://www.jacoco.org/jacoco)
 for downloads, documentation and feedback.

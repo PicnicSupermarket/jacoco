@@ -27,7 +27,7 @@ public final class ExecutionData {
 
 	private final String name;
 
-	private final boolean[] probes;
+	private final int[] probes;
 
 	/**
 	 * Creates a new {@link ExecutionData} object with the given probe data.
@@ -40,7 +40,7 @@ public final class ExecutionData {
 	 *            probe data
 	 */
 	public ExecutionData(final long id, final String name,
-			final boolean[] probes) {
+						 final int[] probes) {
 		this.id = id;
 		this.name = name;
 		this.probes = probes;
@@ -61,7 +61,7 @@ public final class ExecutionData {
 			final int probeCount) {
 		this.id = id;
 		this.name = name;
-		this.probes = new boolean[probeCount];
+		this.probes = new int[probeCount];
 	}
 
 	/**
@@ -84,20 +84,20 @@ public final class ExecutionData {
 	}
 
 	/**
-	 * Returns the execution data probes. A value of <code>true</code> indicates
-	 * that the corresponding probe was executed.
+	 * Returns the execution data probes. A value greater of <code>0</code> indicates
+	 * that the corresponding probe was executed at least once.
 	 *
 	 * @return probe data
 	 */
-	public boolean[] getProbes() {
+	public int[] getProbes() {
 		return probes;
 	}
 
 	/**
-	 * Sets all probes to <code>false</code>.
+	 * Sets all probes to <code>0</code>.
 	 */
 	public void reset() {
-		Arrays.fill(probes, false);
+		Arrays.fill(probes, 0);
 	}
 
 	/**
@@ -106,8 +106,8 @@ public final class ExecutionData {
 	 * @return <code>true</code>, if at least one probe has been hit
 	 */
 	public boolean hasHits() {
-		for (final boolean p : probes) {
-			if (p) {
+		for (final int p : probes) {
+			if (p > 0) {
 				return true;
 			}
 		}
@@ -117,11 +117,12 @@ public final class ExecutionData {
 	/**
 	 * Merges the given execution data into the probe data of this object. I.e.
 	 * a probe entry in this object is marked as executed (<code>true</code>) if
-	 * this probe or the corresponding other probe was executed. So the result
+	 * this probe or the corresponding other probe was executed. The counts of those probes are
+	 * added together. So the result
 	 * is
 	 *
 	 * <pre>
-	 * A or B
+	 * A + B
 	 * </pre>
 	 *
 	 * The probe array of the other object is not modified.
@@ -135,18 +136,17 @@ public final class ExecutionData {
 
 	/**
 	 * Merges the given execution data into the probe data of this object. A
-	 * probe in this object is set to the value of <code>flag</code> if the
-	 * corresponding other probe was executed. For <code>flag==true</code> this
-	 * corresponds to
+	 * probe in this object is added to that of the other probe if <code>flag</code> was set to true.
+	 * For <code>flag==true</code> this corresponds to
 	 *
 	 * <pre>
-	 * A or B
+	 * A + B
 	 * </pre>
 	 *
 	 * For <code>flag==false</code> this can be considered as a subtraction
 	 *
 	 * <pre>
-	 * A and not B
+	 * A - B
 	 * </pre>
 	 *
 	 * The probe array of the other object is not modified.
@@ -159,10 +159,15 @@ public final class ExecutionData {
 	public void merge(final ExecutionData other, final boolean flag) {
 		assertCompatibility(other.getId(), other.getName(),
 				other.getProbes().length);
-		final boolean[] otherData = other.getProbes();
+		final int[] otherData = other.getProbes();
 		for (int i = 0; i < probes.length; i++) {
-			if (otherData[i]) {
-				probes[i] = flag;
+			int otherProbe = otherData[i];
+			if (otherProbe > 0) {
+				if(flag) {
+					probes[i] += otherProbe;
+				} else {
+					probes[i] -= otherProbe;
+				}
 			}
 		}
 	}

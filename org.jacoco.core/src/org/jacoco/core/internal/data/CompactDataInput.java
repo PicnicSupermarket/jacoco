@@ -69,4 +69,20 @@ public class CompactDataInput extends DataInputStream {
 		return value;
 	}
 
+	/**
+	 * Reads an integer array.
+	 *
+	 * @return integer array
+	 * @throws IOException
+	 *             if thrown by the underlying stream
+	 */
+	public int[] readIntegerArray() throws IOException {
+		// TODO: We also need to convert writing the boolean[] to an int[].
+		final int[] value = new int[readVarInt()];
+		for (int i = 0; i < value.length; i++) {
+			value[i] = readVarInt();
+		}
+		return value;
+	}
+
 }

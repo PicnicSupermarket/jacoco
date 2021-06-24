@@ -67,9 +67,8 @@ public class ReportTest extends CommandTestBase {
 		final FileOutputStream execout = new FileOutputStream(exec);
 		ExecutionDataWriter writer = new ExecutionDataWriter(execout);
 		// Add probably invalid id for this test class:
-		writer.visitClassExecution(
-				new ExecutionData(0x123, getClass().getName().replace('.', '/'),
-						new int[] { 1 }));
+		writer.visitClassExecution(new ExecutionData(0x123,
+				getClass().getName().replace('.', '/'), new int[] { 1 }));
 		execout.close();
 
 		execute("report", exec.getAbsolutePath(), "--classfiles",

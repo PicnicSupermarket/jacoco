@@ -92,7 +92,7 @@ public class CompactDataOutput extends DataOutputStream {
 	 */
 	public void writeIntegerArray(final int[] value) throws IOException {
 		writeVarInt(value.length);
-		for (final int i: value) {
+		for (final int i : value) {
 			writeVarInt(i);
 		}
 	}

@@ -39,8 +39,7 @@ public final class ExecutionData {
 	 * @param probes
 	 *            probe data
 	 */
-	public ExecutionData(final long id, final String name,
-						 final int[] probes) {
+	public ExecutionData(final long id, final String name, final int[] probes) {
 		this.id = id;
 		this.name = name;
 		this.probes = probes;
@@ -84,8 +83,8 @@ public final class ExecutionData {
 	}
 
 	/**
-	 * Returns the execution data probes. A value greater of <code>0</code> indicates
-	 * that the corresponding probe was executed at least once.
+	 * Returns the execution data probes. A value greater of <code>0</code>
+	 * indicates that the corresponding probe was executed at least once.
 	 *
 	 * @return probe data
 	 */
@@ -117,9 +116,8 @@ public final class ExecutionData {
 	/**
 	 * Merges the given execution data into the probe data of this object. I.e.
 	 * a probe entry in this object is marked as executed (<code>true</code>) if
-	 * this probe or the corresponding other probe was executed. The counts of those probes are
-	 * added together. So the result
-	 * is
+	 * this probe or the corresponding other probe was executed. The counts of
+	 * those probes are added together. So the result is
 	 *
 	 * <pre>
 	 * A + B
@@ -136,8 +134,9 @@ public final class ExecutionData {
 
 	/**
 	 * Merges the given execution data into the probe data of this object. A
-	 * probe in this object is added to that of the other probe if <code>flag</code> was set to true.
-	 * For <code>flag==true</code> this corresponds to
+	 * probe in this object is added to that of the other probe if
+	 * <code>flag</code> was set to true. For <code>flag==true</code> this
+	 * corresponds to
 	 *
 	 * <pre>
 	 * A + B
@@ -163,7 +162,7 @@ public final class ExecutionData {
 		for (int i = 0; i < probes.length; i++) {
 			int otherProbe = otherData[i];
 			if (otherProbe > 0) {
-				if(flag) {
+				if (flag) {
 					probes[i] += otherProbe;
 				} else {
 					probes[i] -= otherProbe;

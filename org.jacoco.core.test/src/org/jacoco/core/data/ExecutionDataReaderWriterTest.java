@@ -318,8 +318,7 @@ public class ExecutionDataReaderWriterTest {
 		return data;
 	}
 
-	private void assertArrayEquals(final int[] expected,
-			final int[] actual) {
+	private void assertArrayEquals(final int[] expected, final int[] actual) {
 		assertTrue(Arrays.equals(expected, actual));
 	}
 

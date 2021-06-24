@@ -217,8 +217,7 @@ public class TcpConnectionTest extends ExecutorTestBase {
 
 	@Test
 	public void testRemoteReset() throws Exception {
-		data.getExecutionData(Long.valueOf(123), "Foo", 1)
-				.getProbes()[0] = 1;
+		data.getExecutionData(Long.valueOf(123), "Foo", 1).getProbes()[0] = 1;
 
 		final RemoteControlWriter remoteWriter = new RemoteControlWriter(
 				mockConnection.getSocketB().getOutputStream());

@@ -17,14 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
@@ -42,6 +35,7 @@ import org.jacoco.core.test.TargetLoader;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Test;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -204,6 +198,16 @@ public class InstrumenterTest {
 		// Create instrumented instance:
 		byte[] bytes = instrumenter.instrument(
 				TargetLoader.getClassData(SerializationTarget.class), "Test");
+
+		// TODO: tmp
+		System.out.println("======================");
+		System.out.println("Instrumented byte code");
+		System.out.println("======================");
+		final ClassReader reader = InstrSupport.classReaderFor(bytes);
+		org.objectweb.asm.util.TraceClassVisitor tcv = new org.objectweb.asm.util.TraceClassVisitor(new PrintWriter(System.out));
+		reader.accept(tcv, 0);
+		// TODO: tmp
+
 		TargetLoader loader = new TargetLoader();
 		Object obj1 = loader.add(SerializationTarget.class, bytes)
 				.getConstructor(String.class, Integer.TYPE)

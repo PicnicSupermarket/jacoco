@@ -56,14 +56,14 @@ public class RuntimeDataTest {
 				Integer.valueOf(3) };
 		data.equals(args);
 
-		assertEquals(3, ((boolean[]) args[0]).length);
+		assertEquals(3, ((int[]) args[0]).length);
 
 		data.collect(storage, storage, false);
-		boolean[] data = (boolean[]) args[0];
+		int[] data = (int[]) args[0];
 		assertEquals(3, data.length, 0.0);
-		assertFalse(data[0]);
-		assertFalse(data[1]);
-		assertFalse(data[2]);
+		assertFalse(data[0] > 0);
+		assertFalse(data[1] > 0);
+		assertFalse(data[2] > 0);
 		assertSame(storage.getData(123).getProbes(), data);
 		assertEquals("Foo", storage.getData(123).getName());
 	}

@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.jacoco.core.instr;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -74,6 +71,16 @@ public class Instrumenter {
 	private byte[] instrument(final byte[] source) {
 		final long classId = CRC64.classId(source);
 		final ClassReader reader = InstrSupport.classReaderFor(source);
+
+		// TODO: tmp
+		System.out.println("======================");
+		System.out.println("Original byte code");
+		System.out.println("======================");
+		final ClassReader reader2 = InstrSupport.classReaderFor(source);
+		org.objectweb.asm.util.TraceClassVisitor tcv = new org.objectweb.asm.util.TraceClassVisitor(new PrintWriter(System.out));
+		reader2.accept(tcv, 0);
+		// TODO: tmp
+
 		final ClassWriter writer = new ClassWriter(reader, 0) {
 			@Override
 			protected String getCommonSuperClass(final String type1,

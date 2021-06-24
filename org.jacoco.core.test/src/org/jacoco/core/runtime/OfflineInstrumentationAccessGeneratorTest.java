@@ -38,8 +38,8 @@ public class OfflineInstrumentationAccessGeneratorTest {
 	private static int[] probes;
 
 	// runtime stub
-	public static int[] getProbes(final long classid,
-			final String classname, final int probecount) {
+	public static int[] getProbes(final long classid, final String classname,
+			final int probecount) {
 		return probes;
 	}
 

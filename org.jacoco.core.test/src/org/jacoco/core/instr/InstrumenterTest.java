@@ -35,7 +35,6 @@ import org.jacoco.core.test.TargetLoader;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Test;
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

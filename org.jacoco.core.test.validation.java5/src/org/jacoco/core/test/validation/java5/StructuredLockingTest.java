@@ -89,6 +89,7 @@ public class StructuredLockingTest {
 			}
 		};
 
+		// TODO: Analyze why we are now exceeding maximum stack size
 		Frame<BasicValue>[] frames = analyzer.analyze(owner, mn);
 
 		// Make sure no locks are left when method exits:

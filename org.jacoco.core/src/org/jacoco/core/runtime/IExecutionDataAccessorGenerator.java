@@ -30,7 +30,7 @@ public interface IExecutionDataAccessorGenerator {
 	 * initialization. This method can be called at any time even outside the
 	 * target VM.
 	 *
-	 * The generated code must push a <code>boolean[]</code> instance to the
+	 * The generated code must push a <code>int[]</code> instance to the
 	 * operand stack. Except this result object the generated code must not make
 	 * any assumptions about the structure of the embedding method or class. The
 	 * generated code must not use or allocate local variables.

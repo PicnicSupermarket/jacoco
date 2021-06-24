@@ -199,15 +199,6 @@ public class InstrumenterTest {
 		byte[] bytes = instrumenter.instrument(
 				TargetLoader.getClassData(SerializationTarget.class), "Test");
 
-		// TODO: tmp
-		System.out.println("======================");
-		System.out.println("Instrumented byte code");
-		System.out.println("======================");
-		final ClassReader reader = InstrSupport.classReaderFor(bytes);
-		org.objectweb.asm.util.TraceClassVisitor tcv = new org.objectweb.asm.util.TraceClassVisitor(new PrintWriter(System.out));
-		reader.accept(tcv, 0);
-		// TODO: tmp
-
 		TargetLoader loader = new TargetLoader();
 		Object obj1 = loader.add(SerializationTarget.class, bytes)
 				.getConstructor(String.class, Integer.TYPE)

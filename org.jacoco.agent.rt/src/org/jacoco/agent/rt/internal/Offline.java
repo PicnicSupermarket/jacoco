@@ -55,7 +55,7 @@ public final class Offline {
 	 *            probe count for this class
 	 * @return probe array instance for this class
 	 */
-	public static boolean[] getProbes(final long classid,
+	public static int[] getProbes(final long classid,
 			final String classname, final int probecount) {
 		return getRuntimeData()
 				.getExecutionData(Long.valueOf(classid), classname, probecount)

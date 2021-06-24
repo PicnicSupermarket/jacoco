@@ -82,10 +82,11 @@ public final class ExecDump {
 		out.println();
 	}
 
-	private int getHitCount(final boolean[] data) {
+	private int getHitCount(final int[] data) {
+		// TODO: Does this make sense or should we rather sum the int[]?
 		int count = 0;
-		for (final boolean hit : data) {
-			if (hit) {
+		for (final int hit : data) {
+			if (hit > 0) {
 				count++;
 			}
 		}

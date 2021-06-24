@@ -165,7 +165,7 @@ public final class ExecutionData {
 				if (flag) {
 					probes[i] += otherProbe;
 				} else {
-					probes[i] -= otherProbe;
+					probes[i] = Math.max(probes[i] - otherProbe, 0);
 				}
 			}
 		}

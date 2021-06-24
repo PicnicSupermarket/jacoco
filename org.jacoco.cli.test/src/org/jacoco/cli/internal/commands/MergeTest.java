@@ -80,7 +80,7 @@ public class MergeTest extends CommandTestBase {
 		final FileOutputStream execout = new FileOutputStream(file);
 		ExecutionDataWriter writer = new ExecutionDataWriter(execout);
 		writer.visitClassExecution(new ExecutionData(name.hashCode(), name,
-				new boolean[] { true }));
+				new int[] { 1 }));
 		execout.close();
 		return file;
 	}

@@ -132,7 +132,7 @@ public class TcpConnectionTest extends ExecutorTestBase {
 	@Test
 	public void testRemoteDump() throws Exception {
 		data.getExecutionData(Long.valueOf(0x12345678), "Foo", 42)
-				.getProbes()[0] = true;
+				.getProbes()[0] = 1;
 		data.setSessionId("stubid");
 
 		final RemoteControlWriter remoteWriter = new RemoteControlWriter(
@@ -161,7 +161,7 @@ public class TcpConnectionTest extends ExecutorTestBase {
 	@Test
 	public void testLocalDump() throws Exception {
 		data.getExecutionData(Long.valueOf(0x12345678), "Foo", 42)
-				.getProbes()[0] = true;
+				.getProbes()[0] = 1;
 		data.setSessionId("stubid");
 
 		new RemoteControlWriter(mockConnection.getSocketB().getOutputStream());
@@ -218,7 +218,7 @@ public class TcpConnectionTest extends ExecutorTestBase {
 	@Test
 	public void testRemoteReset() throws Exception {
 		data.getExecutionData(Long.valueOf(123), "Foo", 1)
-				.getProbes()[0] = true;
+				.getProbes()[0] = 1;
 
 		final RemoteControlWriter remoteWriter = new RemoteControlWriter(
 				mockConnection.getSocketB().getOutputStream());
@@ -250,7 +250,7 @@ public class TcpConnectionTest extends ExecutorTestBase {
 		assertTrue(infoStore.getInfos().isEmpty());
 		assertTrue(execStore.getContents().isEmpty());
 		assertFalse(data.getExecutionData(Long.valueOf(123), "Foo", 1)
-				.getProbes()[0]);
+				.getProbes()[0] > 0);
 
 		con.close();
 		f.get();

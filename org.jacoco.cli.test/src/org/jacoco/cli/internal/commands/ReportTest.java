@@ -69,7 +69,7 @@ public class ReportTest extends CommandTestBase {
 		// Add probably invalid id for this test class:
 		writer.visitClassExecution(
 				new ExecutionData(0x123, getClass().getName().replace('.', '/'),
-						new boolean[] { true }));
+						new int[] { 1 }));
 		execout.close();
 
 		execute("report", exec.getAbsolutePath(), "--classfiles",

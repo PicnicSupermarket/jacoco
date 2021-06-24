@@ -44,7 +44,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 
 	private int nextProbeId;
 
-	private boolean[] probes;
+	private int[] probes;
 
 	private MethodNode method;
 
@@ -55,7 +55,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 		nextProbeId = 0;
 		method = new MethodNode();
 		method.tryCatchBlocks = new ArrayList<TryCatchBlockNode>();
-		probes = new boolean[32];
+		probes = new int[32];
 	}
 
 	public int nextId() {
@@ -105,7 +105,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void linear_instruction_sequence_should_show_covered_when_probe_is_executed() {
 		createLinearSequence();
-		probes[0] = true;
+		probes[0] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 0);
@@ -127,7 +127,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void linear_instruction_sequence_should_ignore_instructions_when_filter_is_applied() {
 		createLinearSequence();
-		probes[0] = true;
+		probes[0] = 1;
 		runMethodAnalzer(NOP_FILTER);
 
 		assertEquals(1002, result.getFirstLine());
@@ -177,7 +177,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_should_show_partial_branch_coverage_when_probe_for_first_branch_is_executed() {
 		createIfBranch();
-		probes[0] = true;
+		probes[0] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -188,7 +188,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_should_show_partial_branch_coverage_when_probe_for_second_branch_is_executed() {
 		createIfBranch();
-		probes[1] = true;
+		probes[1] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -199,8 +199,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_should_show_full_branch_coverage_when_probes_for_both_branches_are_executed() {
 		createIfBranch();
-		probes[0] = true;
-		probes[1] = true;
+		probes[0] = 1;
+		probes[1] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 2);
@@ -251,8 +251,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_before_probes_should_show_partial_branch_coverage_when_probe_for_first_branch_is_executed() {
 		createIfBranchBeforeProbe();
-		probes[0] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -263,9 +263,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_before_probes_should_show_partial_branch_coverage_when_probe_for_second_branch_is_executed() {
 		createIfBranchBeforeProbe();
-		probes[1] = true;
-		probes[2] = true;
-		probes[3] = true;
+		probes[1] = 1;
+		probes[2] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -276,10 +276,10 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_before_probes_should_show_full_branch_coverage_when_probes_for_both_branches_are_executed() {
 		createIfBranchBeforeProbe();
-		probes[0] = true;
-		probes[1] = true;
-		probes[2] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[1] = 1;
+		probes[2] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 2);
@@ -325,8 +325,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_merge_should_show_partial_branch_coverage_when_probe_for_first_branch_is_executed() {
 		createIfBranchMerge();
-		probes[0] = true;
-		probes[2] = true;
+		probes[0] = 1;
+		probes[2] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -337,8 +337,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_merge_should_show_partial_branch_coverage_when_probe_for_second_branch_is_executed() {
 		createIfBranchMerge();
-		probes[1] = true;
-		probes[2] = true;
+		probes[1] = 1;
+		probes[2] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 1, 1);
@@ -349,9 +349,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void if_branch_merge_should_show_full_branch_coverage_when_probes_for_both_branches_are_executed() {
 		createIfBranchMerge();
-		probes[0] = true;
-		probes[1] = true;
-		probes[2] = true;
+		probes[0] = 1;
+		probes[1] = 1;
+		probes[2] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 2);
@@ -396,7 +396,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void jump_backwards_should_show_covered_when_probe_is_executed() {
 		createJumpBackwards();
-		probes[0] = true;
+		probes[0] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 1, 0, 0);
@@ -439,7 +439,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void jump_to_first_instruction_should_show_partial_branch_coverage_when_probe_for_first_branch_is_executed() {
 		createJumpToFirst();
-		probes[0] = true;
+		probes[0] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 3, 1, 1);
@@ -449,8 +449,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void jump_to_first_instruction_should_show_full_branch_coverage_when_probes_for_both_branches_are_executed() {
 		createJumpToFirst();
-		probes[0] = true;
-		probes[1] = true;
+		probes[0] = 1;
+		probes[1] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 3, 0, 2);
@@ -530,8 +530,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_with_filter_should_show_full_branch_coverage_when_new_targets_covered() {
 		createTableSwitch();
-		probes[0] = true;
-		probes[1] = true;
+		probes[0] = 1;
+		probes[1] = 1;
 		runMethodAnalzer(SWITCH_FILTER);
 
 		assertLine(1001, 0, 2, 0, 2);
@@ -554,8 +554,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_should_show_partial_branch_coverage_when_probes_for_first_branch_and_default_are_executed() {
 		createTableSwitch();
-		probes[0] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 2, 1);
@@ -570,8 +570,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_should_show_partial_branch_coverage_when_probes_for_third_branch_and_default_are_executed() {
 		createTableSwitch();
-		probes[2] = true;
-		probes[3] = true;
+		probes[2] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 2, 1);
@@ -586,10 +586,10 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_should_show_full_branch_coverage_when_all_probes_are_executed() {
 		createTableSwitch();
-		probes[0] = true;
-		probes[1] = true;
-		probes[2] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[1] = 1;
+		probes[2] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 3);
@@ -651,8 +651,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_with_merge_should_show_two_missed_cases_when_probes_for_these_branches_are_not_executed() {
 		createTableSwitchMerge();
-		probes[0] = true;
-		probes[4] = true;
+		probes[0] = 1;
+		probes[4] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 0);
@@ -665,9 +665,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_with_merge_should_show_one_missed_case_when_probe_for_this_branch_is_not_executed() {
 		createTableSwitchMerge();
-		probes[1] = true;
-		probes[3] = true;
-		probes[4] = true;
+		probes[1] = 1;
+		probes[3] = 1;
+		probes[4] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 0);
@@ -680,9 +680,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_with_merge_should_show_partial_branch_coverage_when_probe_for_one_branch_is_not_executed() {
 		createTableSwitchMerge();
-		probes[2] = true;
-		probes[3] = true;
-		probes[4] = true;
+		probes[2] = 1;
+		probes[3] = 1;
+		probes[4] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 0);
@@ -695,11 +695,11 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void table_switch_with_merge_should_show_full_branch_coverage_when_all_probes_are_executed() {
 		createTableSwitchMerge();
-		probes[0] = true;
-		probes[1] = true;
-		probes[2] = true;
-		probes[3] = true;
-		probes[4] = true;
+		probes[0] = 1;
+		probes[1] = 1;
+		probes[2] = 1;
+		probes[3] = 1;
+		probes[4] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 2, 0, 0);
@@ -752,8 +752,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void try_catch_should_show_exception_handler_missed_when_probe_is_not_executed() {
 		createTryCatchBlock();
-		probes[0] = true;
-		probes[2] = true;
+		probes[0] = 1;
+		probes[2] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 3, 0, 0);
@@ -764,9 +764,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void try_catch_should_show_all_covered_when_all_probes_are_executed() {
 		createTryCatchBlock();
-		probes[0] = true;
-		probes[1] = true;
-		probes[2] = true;
+		probes[0] = 1;
+		probes[1] = 1;
+		probes[2] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 0, 3, 0, 0);
@@ -813,8 +813,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void try_finally_without_filter_should_show_all_branches() {
 		createTryFinally();
-		probes[0] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[3] = 1;
 		runMethodAnalzer();
 
 		assertLine(1001, 2, 4, 2, 2);
@@ -836,8 +836,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void try_finally_with_filter_should_show_partial_branch_coverage_when_same_branch_is_covered_and_merged() {
 		createTryFinally();
-		probes[0] = true;
-		probes[2] = true;
+		probes[0] = 1;
+		probes[2] = 1;
 		runMethodAnalzer(TRY_FINALLY_FILTER);
 		assertLine(1001, 2, 3, 1, 1);
 	}
@@ -845,8 +845,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Test
 	public void try_finally_with_filter_should_show_full_branch_coverage_when_different_branches_are_covered_and_merged() {
 		createTryFinally();
-		probes[0] = true;
-		probes[3] = true;
+		probes[0] = 1;
+		probes[3] = 1;
 		runMethodAnalzer(TRY_FINALLY_FILTER);
 		assertLine(1001, 2, 3, 0, 2);
 	}

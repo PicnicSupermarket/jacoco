@@ -72,7 +72,7 @@ public class ExecutionDataReaderWriterTest {
 
 	@Test
 	public void testFlush() throws IOException {
-		final boolean[] flushCalled = new boolean[] { false };
+		final int[] flushCalled = new int[] { 0 };
 		final OutputStream out = new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
@@ -80,11 +80,11 @@ public class ExecutionDataReaderWriterTest {
 
 			@Override
 			public void flush() throws IOException {
-				flushCalled[0] = true;
+				flushCalled[0] = 1;
 			}
 		};
 		new ExecutionDataWriter(out).flush();
-		assertTrue(flushCalled[0]);
+		assertTrue(flushCalled[0] > 0);
 	}
 
 	@Test
@@ -285,16 +285,16 @@ public class ExecutionDataReaderWriterTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testExecutionDataIOException() throws IOException {
-		final boolean[] broken = new boolean[1];
+		final int[] broken = new int[1];
 		final ExecutionDataWriter writer = createWriter(new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
-				if (broken[0]) {
+				if (broken[0] > 0) {
 					throw new IOException();
 				}
 			}
 		});
-		broken[0] = true;
+		broken[0] = 1;
 		writer.visitClassExecution(
 				new ExecutionData(3, "Sample", createData(1)));
 	}

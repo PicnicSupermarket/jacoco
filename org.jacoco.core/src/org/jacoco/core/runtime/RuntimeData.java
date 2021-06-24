@@ -249,7 +249,7 @@ public class RuntimeData {
 		mv.visitInsn(Opcodes.ICONST_0);
 		mv.visitInsn(Opcodes.AALOAD);
 
-		// stack[0]: [Z
+		// stack[0]: [I
 
 		mv.visitTypeInsn(Opcodes.CHECKCAST, InstrSupport.DATAFIELD_DESC);
 	}

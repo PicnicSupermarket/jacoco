@@ -81,7 +81,7 @@ public class InstrumenterTest {
 				final MethodVisitor mv) {
 			this.classId = classId;
 			InstrSupport.push(mv, probeCount);
-			mv.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_BOOLEAN);
+			mv.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_INT);
 			return 1;
 		}
 

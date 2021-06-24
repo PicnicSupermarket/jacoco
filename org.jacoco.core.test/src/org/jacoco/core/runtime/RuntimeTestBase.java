@@ -138,8 +138,8 @@ public abstract class RuntimeTestBase {
 
 		// get()
 		gen = new GeneratorAdapter(writer.visitMethod(Opcodes.ACC_PUBLIC, "get",
-				"()[Z", null, new String[0]), Opcodes.ACC_PUBLIC, "get",
-				"()[Z");
+				"()[I", null, new String[0]), Opcodes.ACC_PUBLIC, "get",
+				"()[I");
 		gen.visitCode();
 		gen.getStatic(classType, InstrSupport.DATAFIELD_NAME,
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
@@ -155,7 +155,7 @@ public abstract class RuntimeTestBase {
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
 		gen.push(0);
 		gen.push(1);
-		gen.arrayStore(Type.BOOLEAN_TYPE);
+		gen.arrayStore(Type.INT_TYPE);
 		gen.returnValue();
 		gen.visitMaxs(3, 0);
 		gen.visitEnd();
@@ -168,7 +168,7 @@ public abstract class RuntimeTestBase {
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
 		gen.push(1);
 		gen.push(1);
-		gen.arrayStore(Type.BOOLEAN_TYPE);
+		gen.arrayStore(Type.INT_TYPE);
 		gen.returnValue();
 		gen.visitMaxs(3, 0);
 		gen.visitEnd();
@@ -192,7 +192,7 @@ public abstract class RuntimeTestBase {
 		 *
 		 * @return the probe array
 		 */
-		boolean[] get();
+		int[] get();
 
 		/**
 		 * The implementation will mark probe 0 as executed

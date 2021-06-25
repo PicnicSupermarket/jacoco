@@ -15,7 +15,6 @@ package org.jacoco.core.internal.analysis;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import org.jacoco.core.analysis.ICounter;
 
@@ -76,7 +75,7 @@ public class Instruction {
 	public Instruction(final int line) {
 		this.line = line;
 		this.branches = 0;
-		this.coveredBranchesCount = new ArrayList<>();
+		this.coveredBranchesCount = new ArrayList<Integer>();
 	}
 
 	/**
@@ -157,8 +156,9 @@ public class Instruction {
 		final Instruction result = new Instruction(this.line);
 		result.branches = this.branches;
 
-		IntStream.range(0, Math.max(this.coveredBranchesCount.size(), other.coveredBranchesCount.size()))
-				.forEach(i -> mergeAtIndex(this.coveredBranchesCount, other.coveredBranchesCount, result.coveredBranchesCount, i));
+		for (int i = 0; i < Math.max(this.coveredBranchesCount.size(), other.coveredBranchesCount.size()); i++) {
+			mergeAtIndex(this.coveredBranchesCount, other.coveredBranchesCount, result.coveredBranchesCount, i);
+		}
 		return result;
 	}
 
@@ -184,10 +184,18 @@ public class Instruction {
 		int idx = 0;
 		for (final Instruction b : newBranches) {
 			if (!b.coveredBranchesCount.isEmpty()) {
-				result.coveredBranchesCount.set(idx++, b.coveredBranchesCount.stream().mapToInt(a -> a).sum());
+				result.coveredBranchesCount.set(idx++, getListSum(b.coveredBranchesCount));
 			}
 		}
 		return result;
+	}
+
+	private int getListSum(List<Integer> list) {
+		int sum = 0;
+		for (int integer : list) {
+			sum += integer;
+		}
+		return sum;
 	}
 
 	/**
@@ -199,7 +207,7 @@ public class Instruction {
 	 */
 	public ICounter getInstructionCounter() {
 		return coveredBranchesCount.isEmpty() ? CounterImpl.COUNTER_1_0
-				: CounterImpl.getInstance(0, coveredBranchesCount.stream().mapToInt(a -> a).sum());
+				: CounterImpl.getInstance(0, getListSum(coveredBranchesCount));
 	}
 
 	/**
@@ -212,7 +220,12 @@ public class Instruction {
 		if (branches < 2) {
 			return CounterImpl.COUNTER_0_0;
 		}
-		final int covered = (int) coveredBranchesCount.stream().filter(count -> count > 0).count();
+		int covered = 0;
+		for (int count : coveredBranchesCount) {
+			if (count > 0) {
+				covered++;
+			}
+		}
 		return CounterImpl.getInstance(branches - covered, covered);
 	}
 

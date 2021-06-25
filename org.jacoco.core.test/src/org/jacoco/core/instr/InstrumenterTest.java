@@ -17,7 +17,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
@@ -197,7 +204,6 @@ public class InstrumenterTest {
 		// Create instrumented instance:
 		byte[] bytes = instrumenter.instrument(
 				TargetLoader.getClassData(SerializationTarget.class), "Test");
-
 		TargetLoader loader = new TargetLoader();
 		Object obj1 = loader.add(SerializationTarget.class, bytes)
 				.getConstructor(String.class, Integer.TYPE)

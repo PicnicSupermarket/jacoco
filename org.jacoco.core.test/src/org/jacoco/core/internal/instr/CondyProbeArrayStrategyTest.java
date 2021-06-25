@@ -54,14 +54,14 @@ public class CondyProbeArrayStrategyTest {
 		assertEquals("ClassName", bootstrapMethod.getOwner());
 		assertEquals("$jacocoInit", bootstrapMethod.getName());
 		assertEquals(
-				"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/Class;)[Z",
+				"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/Class;)[I",
 				bootstrapMethod.getDesc());
 		assertTrue(bootstrapMethod.isInterface());
 
 		final TypeInsnNode castInstruction = (TypeInsnNode) m.instructions
 				.get(1);
 		assertEquals(Opcodes.CHECKCAST, castInstruction.getOpcode());
-		assertEquals("[Z", castInstruction.desc);
+		assertEquals("[I", castInstruction.desc);
 
 		final VarInsnNode storeInstruction = (VarInsnNode) m.instructions
 				.get(2);
@@ -91,7 +91,7 @@ public class CondyProbeArrayStrategyTest {
 				| Opcodes.ACC_STATIC, m.access);
 		assertEquals("$jacocoInit", m.name);
 		assertEquals(
-				"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/Class;)[Z",
+				"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/Class;)[I",
 				m.desc);
 
 		assertEquals(4, m.maxStack);

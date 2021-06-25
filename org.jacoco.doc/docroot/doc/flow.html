@@ -29,6 +29,10 @@
   the actual code coverage. Marc R. Hoffmann, November 2011
 </p>
 
+<p class="hint">
+  Some of this documentation might not be accurate due to the changes introduced in this fork.
+</p>
+
 <h2>Control Flow Graphs for Java Bytecode</h2>
 
 <p>
@@ -321,20 +325,24 @@ public static example()V
 </ul>
 
 <p>
-  JaCoCo implements probes with a <code>boolean[]</code> array instance per
+  This JaCoCo fork implements probes with a <code>int[]</code> array instance per
   class. Each probe corresponds to a entry in this array. Whenever the probe is
-  executed the entry is set to <code>true</code> with the following four
+  executed the entry is incremented by 1 using the following seven
   bytecode instructions:
 </p>
 
 <pre class="source">
 ALOAD    probearray
 xPUSH    probeid
+DUP2
+IALOAD
 ICONST_1
-BASTORE
+IADD
+IASTORE
 </pre>
 
 <p>
+  <!-- TODO: Check whether this is still the case -->
   Note that this probe code is thread safe and does not modify the operand stack
   or modify local variables. It does also not leave the
   method through an external call. The only prerequisite is that the probe array
@@ -346,6 +354,7 @@ BASTORE
 </p>
 
 <p>
+  <!-- TODO: Update this -->
   The size of the probe code above depends on the position of the probe array
   variable and the value of the probe identifier as different opcodes can be
   used. As calculated in the table below the overhead per probe ranges between 4
@@ -404,6 +413,7 @@ BASTORE
 <h2>Performance</h2>
 
 <p>
+  <!-- TODO: Perform performance tests and update this -->
   The control flow analysis and probe insertion strategy described in this
   document allows to efficiently record instruction and branch coverage. In
   total classes instrumented with JaCoCo increase their size by about 30%. Due

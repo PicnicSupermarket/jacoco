@@ -141,7 +141,7 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 		final int maxStack = accessorGenerator.generateDataAccessor(classId,
 				className, probeCount, mv);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		mv.visitFieldInsn(Opcodes.PUTSTATIC, className,
 				InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);

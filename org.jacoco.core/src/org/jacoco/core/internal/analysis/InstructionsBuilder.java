@@ -146,8 +146,8 @@ class InstructionsBuilder {
 	 *            unique branch number for the last instruction
 	 */
 	void addProbe(final int probeId, final int branch) {
-		final boolean executed = probes != null && probes[probeId] > 0;
-		currentInsn.addBranch(executed, branch);
+		final int executionCount = probes == null ? 0 : probes[probeId];
+		currentInsn.addBranch(executionCount, branch);
 	}
 
 	/**

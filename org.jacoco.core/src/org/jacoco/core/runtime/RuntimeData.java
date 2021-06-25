@@ -212,8 +212,8 @@ public class RuntimeData {
 	 * Generates the code that calls a {@link RuntimeData} instance through the
 	 * JRE API method {@link Object#equals(Object)}. The code pops a
 	 * {@link Object} instance from the stack and pushes the probe array of type
-	 * <code>boolean[]</code> on the operand stack. The generated code requires
-	 * a stack size of 6.
+	 * <code>int[]</code> on the operand stack. The generated code requires a
+	 * stack size of 6.
 	 *
 	 * @param classid
 	 *            class identifier

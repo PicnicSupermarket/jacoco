@@ -16,9 +16,9 @@ import org.objectweb.asm.*;
 
 /**
  * Internal utility to add probes into the control flow of a method. The code
- * for a probe simply sets a certain slot of a boolean array to true. In
- * addition the probe array has to be retrieved at the beginning of the method
- * and stored in a local variable.
+ * for a probe simply increments a certain slot of the int array. In addition
+ * the probe array has to be retrieved at the beginning of the method and stored
+ * in a local variable.
  */
 class ProbeInserter extends MethodVisitor implements IProbeInserter {
 

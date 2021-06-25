@@ -58,18 +58,17 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 			final int maxStack = accessorGenerator.generateDataAccessor(classId,
 					className, probeCount, mv);
 
-			// Stack[0]: [Z
+			// Stack[0]: [I
 
 			mv.visitInsn(Opcodes.DUP);
 
-			// Stack[1]: [Z
-			// Stack[0]: [Z
+			// Stack[1]: [I
+			// Stack[0]: [I
 
 			mv.visitFieldInsn(Opcodes.PUTSTATIC, className,
 					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
 
-			// Stack[0]: [Z
-
+			// Stack[0]: [I
 			mv.visitVarInsn(Opcodes.ASTORE, variable);
 
 			seenClinit = true;
@@ -108,20 +107,20 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 				InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
 		mv.visitInsn(Opcodes.DUP);
 
-		// Stack[1]: [Z
-		// Stack[0]: [Z
+		// Stack[1]: [I
+		// Stack[0]: [I
 
 		// Skip initialization when we already have a data array:
 		final Label alreadyInitialized = new Label();
 		mv.visitJumpInsn(Opcodes.IFNONNULL, alreadyInitialized);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		mv.visitInsn(Opcodes.POP);
 		final int size = accessorGenerator.generateDataAccessor(classId,
 				className, probeCount, mv);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		// Return the class' probe array:
 		mv.visitFrame(Opcodes.F_NEW, 0, FRAME_LOCALS_EMPTY, 1,

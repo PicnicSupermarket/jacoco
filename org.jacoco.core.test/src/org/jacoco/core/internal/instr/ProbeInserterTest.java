@@ -66,8 +66,11 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.DUP2);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.BASTORE);
+		expectedVisitor.visitInsn(Opcodes.IADD);
+		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
 	@Test
@@ -78,8 +81,11 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 1);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.DUP2);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.BASTORE);
+		expectedVisitor.visitInsn(Opcodes.IADD);
+		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
 	@Test
@@ -90,8 +96,11 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 4);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.DUP2);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.BASTORE);
+		expectedVisitor.visitInsn(Opcodes.IADD);
+		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
 	@Test
@@ -102,8 +111,11 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 5);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.DUP2);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.BASTORE);
+		expectedVisitor.visitInsn(Opcodes.IADD);
+		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
 	@Test
@@ -227,7 +239,7 @@ public class ProbeInserterTest {
 		pi.visitMaxs(10, 8);
 
 		expectedVisitor.visitLdcInsn("init");
-		expectedVisitor.visitMaxs(13, 9);
+		expectedVisitor.visitMaxs(14, 9);
 	}
 
 	@Test

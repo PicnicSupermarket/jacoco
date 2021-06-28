@@ -58,6 +58,8 @@ public class Instruction {
 
 	private int branches;
 
+	// Map showing which branches have been executed and how often. If a branch
+	// is not present, it has not been executed.
 	private final HashMap<Integer, Integer> coveredBranchesCount;
 
 	private Instruction predecessor;
@@ -74,9 +76,9 @@ public class Instruction {
 		this.line = line;
 		this.branches = 0;
 		// For boolean[] we can use a BitSet. However, for integers, List
-		// implementations do not suffice as we don't
-		// know the size beforehand and we can not inject with index without
-		// growing the list manually.
+		// implementations do not suffice as we don't know the size
+		// beforehand and we can not inject with index without growing the
+		// list manually.
 		this.coveredBranchesCount = new HashMap<Integer, Integer>();
 	}
 
@@ -84,7 +86,8 @@ public class Instruction {
 	 * Adds a branch to this instruction which execution status is indirectly
 	 * derived from the execution status of the target instruction. In case the
 	 * branch is covered the status is propagated also to the predecessors of
-	 * this instruction.
+	 * this instruction. In such case, we do not sum the execution count but
+	 * take the max.
 	 *
 	 * Note: This method is not idempotent and must be called exactly once for
 	 * every branch.
@@ -99,8 +102,14 @@ public class Instruction {
 		target.predecessor = this;
 		target.predecessorBranch = branch;
 		if (!target.coveredBranchesCount.isEmpty()) {
-			propagateExecutedBranch(this, branch,
-					target.coveredBranchesCount.get(branch));
+			// I don't understand that JaCoCo just sets sets `branch` to `true`
+			// without checking if `target.coveredBranch.get(branch)` is also
+			// `true`. So any branch in the target instruction may be true and
+			// we will just set the current branch to true? To mimic this with
+			// executionCounts, we received `target.coveredBranch.get(branch)`
+			// and set it to 1 if not present for similar behavior.
+			Integer count = target.coveredBranchesCount.get(branch);
+			propagateExecutedBranch(this, branch, count == null ? 1 : count);
 		}
 	}
 
@@ -124,15 +133,19 @@ public class Instruction {
 		}
 	}
 
-	// TODO: Friday 2021-06-25 -- In the process of refactoring this to use
-	// int[] instead of bitset
 	private static void propagateExecutedBranch(Instruction insn, int branch,
 			int count) {
 		// No recursion here, as there can be very long chains of instructions
 		while (insn != null) {
-			if (insn.coveredBranchesCount.containsKey(branch)) {
+			if (!insn.coveredBranchesCount.isEmpty()) {
+				// Instead of just setting `branch` to `true`, we set it to the
+				// max of the current value or the count we want to set it to.
+				// We do this because these changes are propagated and we don't
+				// want to keep increasing downstream branches with total
+				// counts.
+				Integer existing = insn.coveredBranchesCount.get(branch);
 				insn.coveredBranchesCount.put(branch,
-						insn.coveredBranchesCount.get(branch) + count);
+						existing == null ? count : Math.max(existing, count));
 				break;
 			}
 			insn.coveredBranchesCount.put(branch, count);
@@ -165,6 +178,8 @@ public class Instruction {
 
 		for (Map.Entry<Integer, Integer> entry : other.coveredBranchesCount
 				.entrySet()) {
+			// Again, not sure how these instructions work, but I assume we
+			// want to merge execution counts when branches are merged as well.
 			if (result.coveredBranchesCount.containsKey(entry.getKey())) {
 				result.coveredBranchesCount.put(entry.getKey(),
 						result.coveredBranchesCount.get(entry.getKey())
@@ -193,9 +208,12 @@ public class Instruction {
 		result.branches = newBranches.size();
 		int idx = 0;
 		for (final Instruction b : newBranches) {
-			ArrayList<Integer> list = new ArrayList<Integer>();
-			list.ensureCapacity(1);
 			if (!b.coveredBranchesCount.isEmpty()) {
+				// The given instruction has been executed before. Here we
+				// assume that if the instruction had multiple branches
+				// executed, that there were multiple passes on this instruction
+				// and therefore we sum the branches, similar to the instruction
+				// counter.
 				result.coveredBranchesCount.put(idx++,
 						getListSum(b.coveredBranchesCount.values()));
 			}
@@ -212,9 +230,8 @@ public class Instruction {
 	}
 
 	/**
-	 * Returns the instruction coverage counter of this instruction. It is
-	 * always 1 instruction which is covered or not. The counter also indicates
-	 * the execution count for this instruction.
+	 * Returns the instruction coverage counter of this instruction.
+	 * This counter also indicates the execution count for this instruction.
 	 *
 	 * @return the instruction coverage counter
 	 */

@@ -60,7 +60,7 @@ public class Instruction {
 
 	// Map showing which branches have been executed and how often. If a branch
 	// is not present, it has not been executed.
-	private final HashMap<Integer, Integer> coveredBranchesCount;
+	private final HashMap<Integer, Integer> coveredBranches;
 
 	private Instruction predecessor;
 
@@ -79,7 +79,7 @@ public class Instruction {
 		// implementations do not suffice as we don't know the size
 		// beforehand and we can not inject with index without growing the
 		// list manually.
-		this.coveredBranchesCount = new HashMap<Integer, Integer>();
+		this.coveredBranches = new HashMap<Integer, Integer>();
 	}
 
 	/**
@@ -101,15 +101,23 @@ public class Instruction {
 		branches++;
 		target.predecessor = this;
 		target.predecessorBranch = branch;
-		if (!target.coveredBranchesCount.isEmpty()) {
-			// I don't understand that JaCoCo just sets sets `branch` to `true`
-			// without checking if `target.coveredBranch.get(branch)` is also
-			// `true`. So any branch in the target instruction may be true and
-			// we will just set the current branch to true? To mimic this with
-			// executionCounts, we received `target.coveredBranch.get(branch)`
-			// and set it to 1 if not present for similar behavior.
-			Integer count = target.coveredBranchesCount.get(branch);
-			propagateExecutedBranch(this, branch, count == null ? 1 : count);
+		if (!target.coveredBranches.isEmpty()) {
+			// I don't understand how JaCoCo does not consider the target's
+			// branch when setting the coverage info on the current instruction.
+			// I guess Jacoco just did consider whether the target was executed
+			// or not. However, now that we use counts, we need to determine
+			// which branch in target.coveredBranchesCount we need to consider.
+			// We can not use the given `branch` as that is from the perspective
+			// of this instruction's branching, not the target's one. Those
+			// don't always match (see
+			// 'addBranchWithProbe_should_propagate_coverage_status_to_existing_predecessors'
+			// in InstructionTest.java. For now, we just go with the maximum
+			// count.
+			int max = 1;
+			for (int count : target.coveredBranches.values()) {
+				max = Math.max(max, count);
+			}
+			propagateExecutedBranch(this, branch, max);
 		}
 	}
 
@@ -137,18 +145,18 @@ public class Instruction {
 			int count) {
 		// No recursion here, as there can be very long chains of instructions
 		while (insn != null) {
-			if (!insn.coveredBranchesCount.isEmpty()) {
+			if (!insn.coveredBranches.isEmpty()) {
 				// Instead of just setting `branch` to `true`, we set it to the
 				// max of the current value or the count we want to set it to.
 				// We do this because these changes are propagated and we don't
 				// want to keep increasing downstream branches with total
 				// counts.
-				Integer existing = insn.coveredBranchesCount.get(branch);
-				insn.coveredBranchesCount.put(branch,
+				Integer existing = insn.coveredBranches.get(branch);
+				insn.coveredBranches.put(branch,
 						existing == null ? count : Math.max(existing, count));
 				break;
 			}
-			insn.coveredBranchesCount.put(branch, count);
+			insn.coveredBranches.put(branch, count);
 			branch = insn.predecessorBranch;
 			insn = insn.predecessor;
 		}
@@ -174,19 +182,18 @@ public class Instruction {
 	public Instruction merge(final Instruction other) {
 		final Instruction result = new Instruction(this.line);
 		result.branches = this.branches;
-		result.coveredBranchesCount.putAll(this.coveredBranchesCount);
+		result.coveredBranches.putAll(this.coveredBranches);
 
-		for (Map.Entry<Integer, Integer> entry : other.coveredBranchesCount
+		for (Map.Entry<Integer, Integer> entry : other.coveredBranches
 				.entrySet()) {
 			// Again, not sure how these instructions work, but I assume we
 			// want to merge execution counts when branches are merged as well.
-			if (result.coveredBranchesCount.containsKey(entry.getKey())) {
-				result.coveredBranchesCount.put(entry.getKey(),
-						result.coveredBranchesCount.get(entry.getKey())
+			if (result.coveredBranches.containsKey(entry.getKey())) {
+				result.coveredBranches.put(entry.getKey(),
+						result.coveredBranches.get(entry.getKey())
 								+ entry.getValue());
 			} else {
-				result.coveredBranchesCount.put(entry.getKey(),
-						entry.getValue());
+				result.coveredBranches.put(entry.getKey(), entry.getValue());
 			}
 		}
 
@@ -208,14 +215,14 @@ public class Instruction {
 		result.branches = newBranches.size();
 		int idx = 0;
 		for (final Instruction b : newBranches) {
-			if (!b.coveredBranchesCount.isEmpty()) {
+			if (!b.coveredBranches.isEmpty()) {
 				// The given instruction has been executed before. Here we
 				// assume that if the instruction had multiple branches
 				// executed, that there were multiple passes on this instruction
 				// and therefore we sum the branches, similar to the instruction
 				// counter.
-				result.coveredBranchesCount.put(idx++,
-						getListSum(b.coveredBranchesCount.values()));
+				result.coveredBranches.put(idx++,
+						getListSum(b.coveredBranches.values()));
 			}
 		}
 		return result;
@@ -230,15 +237,15 @@ public class Instruction {
 	}
 
 	/**
-	 * Returns the instruction coverage counter of this instruction.
-	 * This counter also indicates the execution count for this instruction.
+	 * Returns the instruction coverage counter of this instruction. This
+	 * counter also indicates the execution count for this instruction.
 	 *
 	 * @return the instruction coverage counter
 	 */
 	public ICounter getInstructionCounter() {
-		return coveredBranchesCount.isEmpty() ? CounterImpl.COUNTER_1_0
+		return coveredBranches.isEmpty() ? CounterImpl.COUNTER_1_0
 				: CounterImpl.getInstance(0,
-						getListSum(coveredBranchesCount.values()));
+						getListSum(coveredBranches.values()));
 	}
 
 	/**
@@ -252,7 +259,7 @@ public class Instruction {
 			return CounterImpl.COUNTER_0_0;
 		}
 		int covered = 0;
-		for (int count : coveredBranchesCount.values()) {
+		for (int count : coveredBranches.values()) {
 			if (count > 0) {
 				covered++;
 			}

@@ -147,6 +147,7 @@ public class InstructionTest {
 		i1.addBranch(0, 2);
 		i1.addBranch(1, 3);
 		i1.addBranch(1, 4);
+		i1.addBranch(2, 5);
 		final Instruction i2 = new Instruction(124);
 		i2.addBranch(0, 1);
 		i2.addBranch(1, 2);
@@ -155,7 +156,9 @@ public class InstructionTest {
 
 		instruction = i1.merge(i2);
 
-		assertEquals(CounterImpl.getInstance(1, 3),
+		assertEquals(CounterImpl.getInstance(0, 6),
+				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(1, 4),
 				instruction.getBranchCounter());
 	}
 
@@ -164,11 +167,15 @@ public class InstructionTest {
 		Instruction i1 = new Instruction(1);
 		Instruction i2 = new Instruction(2);
 		Instruction i3 = new Instruction(3);
+		i2.addBranch(1, 0);
 		i3.addBranch(1, 0);
+		i3.addBranch(2, 1);
 
 		instruction = instruction.replaceBranches(Arrays.asList(i1, i2, i3));
 
-		assertEquals(CounterImpl.getInstance(2, 1),
+		assertEquals(CounterImpl.getInstance(0, 4),
+				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(1, 2),
 				instruction.getBranchCounter());
 	}
 }

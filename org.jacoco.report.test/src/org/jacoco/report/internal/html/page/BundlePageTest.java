@@ -48,7 +48,7 @@ public class BundlePageTest extends PageTestBase {
 		final MethodCoverageImpl methodCoverage = new MethodCoverageImpl("m",
 				"()V", null);
 		methodCoverage.increment(CounterImpl.COUNTER_1_0,
-				CounterImpl.COUNTER_0_0, 42);
+				CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
 		classCoverage.addMethod(methodCoverage);
 		final IPackageCoverage nonEmptyPackage = new PackageCoverageImpl(
 				"example",

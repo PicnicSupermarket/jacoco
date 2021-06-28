@@ -40,7 +40,8 @@ public class ClassPageTest extends PageTestBase {
 	public void setup() throws Exception {
 		super.setup();
 		final MethodCoverageImpl m = new MethodCoverageImpl("a", "()V", null);
-		m.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		m.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_1_0,
+				CounterImpl.COUNTER_0_0, 42);
 		node = new ClassCoverageImpl("org/jacoco/example/Foo", 123, false);
 		node.addMethod(m);
 		node.addMethod(new MethodCoverageImpl("b", "()V", null));
@@ -94,7 +95,8 @@ public class ClassPageTest extends PageTestBase {
 	public void should_generate_message_with_default_package_when_SourceFileName_present_but_no_SourceFilePage()
 			throws Exception {
 		final MethodCoverageImpl m = new MethodCoverageImpl("a", "()V", null);
-		m.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 42);
+		m.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_1_0,
+				CounterImpl.COUNTER_0_0, 42);
 		node = new ClassCoverageImpl("Foo", 123, false);
 		node.addMethod(m);
 		node.setSourceFileName("Foo.java");

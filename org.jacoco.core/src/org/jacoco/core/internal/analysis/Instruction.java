@@ -237,15 +237,14 @@ public class Instruction {
 	}
 
 	/**
-	 * Returns the instruction coverage counter of this instruction. This
-	 * counter also indicates the execution count for this instruction.
+	 * Returns the instruction coverage counter of this instruction. It is
+	 * always 1 instruction which is covered or not.
 	 *
 	 * @return the instruction coverage counter
 	 */
 	public ICounter getInstructionCounter() {
 		return coveredBranches.isEmpty() ? CounterImpl.COUNTER_1_0
-				: CounterImpl.getInstance(0,
-						getListSum(coveredBranches.values()));
+				: CounterImpl.COUNTER_0_1;
 	}
 
 	/**
@@ -267,4 +266,15 @@ public class Instruction {
 		return CounterImpl.getInstance(branches - covered, covered);
 	}
 
+	/**
+	 * Returns a counter denoting how often this instruction has been executed.
+	 * The count is a sum of all counts on every branch.
+	 *
+	 * @return the instruction execution counter
+	 */
+	public ICounter getExecutionCount() {
+		return coveredBranches.isEmpty() ? CounterImpl.COUNTER_1_0
+				: CounterImpl.getInstance(0,
+						getListSum(coveredBranches.values()));
+	}
 }

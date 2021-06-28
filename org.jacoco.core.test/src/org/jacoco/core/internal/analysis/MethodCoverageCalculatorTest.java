@@ -166,7 +166,7 @@ public class MethodCoverageCalculatorTest {
 		c.calculate(coverage);
 
 		assertLine(1, 0, 1, 0, 0);
-		assertLine(2, 0, 1, 0, 2); // one fully covered instruction left
+		assertLine(2, 0, 2, 0, 2); // one fully covered instruction left
 		assertLine(3, 0, 1, 0, 0);
 	}
 
@@ -218,11 +218,14 @@ public class MethodCoverageCalculatorTest {
 				coverage.getInstructionCounter());
 	}
 
-	private void assertLine(int idx, int mi, int ci, int mb, int cb) {
-		assertEquals("instructions", CounterImpl.getInstance(mi, ci),
-				coverage.getLine(idx).getInstructionCounter());
-		assertEquals("branches", CounterImpl.getInstance(mb, cb),
-				coverage.getLine(idx).getBranchCounter());
+	private void assertLine(int line, int missed, int executionCount,
+			int missedBranches, int coveredBranches) {
+		assertEquals("instructions",
+				CounterImpl.getInstance(missed, executionCount),
+				coverage.getLine(line).getInstructionCounter());
+		assertEquals("branches",
+				CounterImpl.getInstance(missedBranches, coveredBranches),
+				coverage.getLine(line).getBranchCounter());
 	}
 
 	private InsnNode addInsn(int line, int... branches) {

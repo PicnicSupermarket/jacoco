@@ -107,42 +107,58 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 *
 	 * @param instructions
 	 *            instructions to add
+	 * @param executions
+	 *            executions to add
 	 * @param branches
 	 *            branches to add
 	 * @param line
 	 *            optional line number or {@link ISourceNode#UNKNOWN_LINE}
 	 */
-	public void increment(final ICounter instructions, final ICounter branches,
+	public void increment(final ICounter instructions,
+			final ICounter executions, final ICounter branches,
 			final int line) {
+		// Note that this has only one usage (in runtime), namely from
+		// MethodCoverageImpl.java. Therefore, this is only executed
+		// when determining a method's coverage based on the given
+		// instruction.
 		if (line != UNKNOWN_LINE) {
-			incrementLine(instructions, branches, line);
+			incrementLine(executions, branches, line);
 		}
+
+		// As this node represents the method, we want to increment it's
+		// instruction counter with cardinality instead of total counts.
+		// This is because it represents how many of the instructions
+		// have been missed and how many have been hit (boolean-wise).
+		// This is similar to what it would have been like before the
+		// int[] change.
 		instructionCounter = instructionCounter.increment(instructions);
 		branchCounter = branchCounter.increment(branches);
 	}
 
-	private void incrementLine(final ICounter instructions,
+	private void incrementLine(final ICounter executions,
 			final ICounter branches, final int line) {
+		// TODO: This is where the magic happens for us. Validate all paths now
+		// that we have execution.
 		ensureCapacity(line, line);
 		final LineImpl l = getLine(line);
 		final int oldTotal = l.getInstructionCounter().getTotalCount();
 		final int oldCovered = l.getInstructionCounter().getCoveredCount();
-		lines[line - offset] = l.increment(instructions, branches);
+		lines[line - offset] = l.increment(executions, branches);
 
 		// Increment line counter:
-		if (instructions.getTotalCount() > 0) {
-			if (instructions.getCoveredCount() == 0) {
+		if (executions.getTotalCount() > 0) {
+			if (executions.getCoveredCount() == 0) {
 				if (oldTotal == 0) {
 					lineCounter = lineCounter
 							.increment(CounterImpl.COUNTER_1_0);
 				}
 			} else {
 				if (oldTotal == 0) {
-					lineCounter = lineCounter
-							.increment(CounterImpl.COUNTER_0_1);
+					lineCounter = lineCounter.increment(executions);
 				} else {
 					if (oldCovered == 0) {
-						lineCounter = lineCounter.increment(-1, +1);
+						lineCounter = lineCounter.increment(-1,
+								executions.getCoveredCount());
 					}
 				}
 			}

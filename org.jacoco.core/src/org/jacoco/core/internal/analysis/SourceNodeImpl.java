@@ -125,12 +125,6 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 			incrementLine(executions, branches, line);
 		}
 
-		// As this node represents the method, we want to increment it's
-		// instruction counter with cardinality instead of total counts.
-		// This is because it represents how many of the instructions
-		// have been missed and how many have been hit (boolean-wise).
-		// This is similar to what it would have been like before the
-		// int[] change.
 		instructionCounter = instructionCounter.increment(instructions);
 		branchCounter = branchCounter.increment(branches);
 	}

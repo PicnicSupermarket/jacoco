@@ -48,10 +48,10 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_report_instructions() {
-		addInsn(1, true);
-		addInsn(2, true);
-		addInsn(2, false);
-		addInsn(3, false);
+		addInsn(1, 1);
+		addInsn(2, 1);
+		addInsn(2, 0);
+		addInsn(3, 0);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.calculate(coverage);
@@ -63,9 +63,9 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_report_instructions_with_branches() {
-		addInsn(1, false, false);
-		addInsn(2, false, false, true);
-		addInsn(3, false, true, true);
+		addInsn(1, 0, 0);
+		addInsn(2, 0, 0, 1);
+		addInsn(3, 0, 1, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.calculate(coverage);
@@ -77,9 +77,9 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_ignore_single_instruction() {
-		addInsn(1, true);
-		InsnNode i1 = addInsn(1, false);
-		addInsn(2, true);
+		addInsn(1, 1);
+		InsnNode i1 = addInsn(1, 0);
+		addInsn(2, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i1);
@@ -91,13 +91,13 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_ignore_instruction_range() {
-		addInsn(1, true);
-		InsnNode i1 = addInsn(2, false);
-		addInsn(2, false);
-		addInsn(2, false);
-		addInsn(2, false);
-		InsnNode i2 = addInsn(2, false);
-		addInsn(3, true);
+		addInsn(1, 1);
+		InsnNode i1 = addInsn(2, 0);
+		addInsn(2, 0);
+		addInsn(2, 0);
+		addInsn(2, 0);
+		InsnNode i2 = addInsn(2, 0);
+		addInsn(3, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i2);
@@ -110,9 +110,9 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_exclude_ignored_instructions_from_computation_of_first_and_last_lines() {
-		InsnNode i1 = addInsn(1, false);
-		addInsn(2, false);
-		InsnNode i3 = addInsn(3, false);
+		InsnNode i1 = addInsn(1, 0);
+		addInsn(2, 0);
+		InsnNode i3 = addInsn(3, 0);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.ignore(i1, i1);
@@ -125,10 +125,10 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_merge_instructions() {
-		addInsn(1, true);
-		InsnNode i1 = addInsn(2, false, true);
-		InsnNode i2 = addInsn(2, true, false);
-		addInsn(3, true);
+		addInsn(1, 1);
+		InsnNode i1 = addInsn(2, 0, 1);
+		InsnNode i2 = addInsn(2, 1, 0);
+		addInsn(3, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
@@ -141,9 +141,9 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_merge_multiple_instructions() {
-		InsnNode i1 = addInsn(1, true, false, false);
-		InsnNode i2 = addInsn(1, false, true, false);
-		InsnNode i3 = addInsn(1, false, false, true);
+		InsnNode i1 = addInsn(1, 1, 0, 0);
+		InsnNode i2 = addInsn(1, 0, 1, 0);
+		InsnNode i3 = addInsn(1, 0, 0, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
@@ -155,10 +155,10 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_merge_instructions_redundant() {
-		addInsn(1, true);
-		InsnNode i1 = addInsn(2, false, true);
-		InsnNode i2 = addInsn(2, true, false);
-		addInsn(3, true);
+		addInsn(1, 1);
+		InsnNode i1 = addInsn(2, 0, 1);
+		InsnNode i2 = addInsn(2, 1, 0);
+		addInsn(3, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i1, i2);
@@ -173,9 +173,9 @@ public class MethodCoverageCalculatorTest {
 	@Test
 	public void should_replace_branches() {
 		InsnNode i1 = addInsn(1);
-		InsnNode i2 = addInsn(2, true);
-		InsnNode i3 = addInsn(2, true);
-		InsnNode i4 = addInsn(2, false);
+		InsnNode i2 = addInsn(2, 1);
+		InsnNode i3 = addInsn(2, 1);
+		InsnNode i4 = addInsn(2, 0);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.replaceBranches(i1,
@@ -188,10 +188,10 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_replace_branches_with_merged_instructions() {
-		InsnNode i1 = addInsn(1, false, false, false);
-		InsnNode i2 = addInsn(2, true);
-		InsnNode i3 = addInsn(2, false);
-		InsnNode i4 = addInsn(2, false);
+		InsnNode i1 = addInsn(1, 0, 0, 0);
+		InsnNode i2 = addInsn(2, 1);
+		InsnNode i3 = addInsn(2, 0);
+		InsnNode i4 = addInsn(2, 0);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.merge(i4, i3);
@@ -205,9 +205,9 @@ public class MethodCoverageCalculatorTest {
 
 	@Test
 	public void should_work_without_lines() {
-		addInsn(ISourceNode.UNKNOWN_LINE, false);
-		addInsn(ISourceNode.UNKNOWN_LINE, false);
-		addInsn(ISourceNode.UNKNOWN_LINE, true);
+		addInsn(ISourceNode.UNKNOWN_LINE, 0);
+		addInsn(ISourceNode.UNKNOWN_LINE, 0);
+		addInsn(ISourceNode.UNKNOWN_LINE, 1);
 
 		MethodCoverageCalculator c = new MethodCoverageCalculator(instructions);
 		c.calculate(coverage);
@@ -225,11 +225,11 @@ public class MethodCoverageCalculatorTest {
 				coverage.getLine(idx).getBranchCounter());
 	}
 
-	private InsnNode addInsn(int line, boolean... branches) {
+	private InsnNode addInsn(int line, int... branches) {
 		Instruction i = new Instruction(line);
 		int idx = 0;
-		for (boolean covered : branches) {
-			i.addBranch(covered, idx++);
+		for (int branch : branches) {
+			i.addBranch(branch, idx++);
 		}
 		InsnNode node = new InsnNode(Opcodes.NOP);
 		list.add(node);

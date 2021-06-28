@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.jacoco.core.internal.analysis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.jacoco.core.analysis.ICounter;
 
@@ -31,8 +29,8 @@ import org.jacoco.core.analysis.ICounter;
  * created. In correspondence with the CFG these instances are linked with each
  * other with the <code>addBranch()</code> methods. The executions count is
  * either directly derived from a probe which has been inserted in the execution
- * flow ({@link #addBranch(int, int)}) or indirectly propagated along the
- * CFG edges ({@link #addBranch(Instruction, int)}).
+ * flow ({@link #addBranch(int, int)}) or indirectly propagated along the CFG
+ * edges ({@link #addBranch(Instruction, int)}).
  *
  * <h2>Step 2: Querying the Coverage Status</h2>
  *
@@ -60,7 +58,7 @@ public class Instruction {
 
 	private int branches;
 
-	private final List<Integer> coveredBranchesCount;
+	private final HashMap<Integer, Integer> coveredBranchesCount;
 
 	private Instruction predecessor;
 
@@ -75,7 +73,11 @@ public class Instruction {
 	public Instruction(final int line) {
 		this.line = line;
 		this.branches = 0;
-		this.coveredBranchesCount = new ArrayList<Integer>();
+		// For boolean[] we can use a BitSet. However, for integers, List
+		// implementations do not suffice as we don't
+		// know the size beforehand and we can not inject with index without
+		// growing the list manually.
+		this.coveredBranchesCount = new HashMap<Integer, Integer>();
 	}
 
 	/**
@@ -97,7 +99,8 @@ public class Instruction {
 		target.predecessor = this;
 		target.predecessorBranch = branch;
 		if (!target.coveredBranchesCount.isEmpty()) {
-			propagateExecutedBranch(this, branch, target.coveredBranchesCount.get(branch));
+			propagateExecutedBranch(this, branch,
+					target.coveredBranchesCount.get(branch));
 		}
 	}
 
@@ -121,15 +124,18 @@ public class Instruction {
 		}
 	}
 
-	// TODO: Friday 2021-06-25 -- In the process of refactoring this to use int[] instead of bitset
-	private static void propagateExecutedBranch(Instruction insn, int branch, int count) {
+	// TODO: Friday 2021-06-25 -- In the process of refactoring this to use
+	// int[] instead of bitset
+	private static void propagateExecutedBranch(Instruction insn, int branch,
+			int count) {
 		// No recursion here, as there can be very long chains of instructions
 		while (insn != null) {
-			if (!insn.coveredBranchesCount.isEmpty()) {
-				insn.coveredBranchesCount.set(branch, insn.coveredBranchesCount.get(branch) + count);
+			if (insn.coveredBranchesCount.containsKey(branch)) {
+				insn.coveredBranchesCount.put(branch,
+						insn.coveredBranchesCount.get(branch) + count);
 				break;
 			}
-			insn.coveredBranchesCount.set(branch, count);
+			insn.coveredBranchesCount.put(branch, count);
 			branch = insn.predecessorBranch;
 			insn = insn.predecessor;
 		}
@@ -155,17 +161,21 @@ public class Instruction {
 	public Instruction merge(final Instruction other) {
 		final Instruction result = new Instruction(this.line);
 		result.branches = this.branches;
+		result.coveredBranchesCount.putAll(this.coveredBranchesCount);
 
-		for (int i = 0; i < Math.max(this.coveredBranchesCount.size(), other.coveredBranchesCount.size()); i++) {
-			mergeAtIndex(this.coveredBranchesCount, other.coveredBranchesCount, result.coveredBranchesCount, i);
+		for (Map.Entry<Integer, Integer> entry : other.coveredBranchesCount
+				.entrySet()) {
+			if (result.coveredBranchesCount.containsKey(entry.getKey())) {
+				result.coveredBranchesCount.put(entry.getKey(),
+						result.coveredBranchesCount.get(entry.getKey())
+								+ entry.getValue());
+			} else {
+				result.coveredBranchesCount.put(entry.getKey(),
+						entry.getValue());
+			}
 		}
-		return result;
-	}
 
-	private void mergeAtIndex(List<Integer> first, List<Integer> second, List<Integer> result, int i) {
-		int a = first.size() <= i ? 0 : first.get(i);
-		int b = second.size() <= i ? 0 : second.get(i);
-		result.set(i, a + b);
+		return result;
 	}
 
 	/**
@@ -183,14 +193,17 @@ public class Instruction {
 		result.branches = newBranches.size();
 		int idx = 0;
 		for (final Instruction b : newBranches) {
+			ArrayList<Integer> list = new ArrayList<Integer>();
+			list.ensureCapacity(1);
 			if (!b.coveredBranchesCount.isEmpty()) {
-				result.coveredBranchesCount.set(idx++, getListSum(b.coveredBranchesCount));
+				result.coveredBranchesCount.put(idx++,
+						getListSum(b.coveredBranchesCount.values()));
 			}
 		}
 		return result;
 	}
 
-	private int getListSum(List<Integer> list) {
+	private int getListSum(Collection<Integer> list) {
 		int sum = 0;
 		for (int integer : list) {
 			sum += integer;
@@ -200,14 +213,15 @@ public class Instruction {
 
 	/**
 	 * Returns the instruction coverage counter of this instruction. It is
-	 * always 1 instruction which is covered or not. The counter also indicates the
-	 * execution count for this instruction
+	 * always 1 instruction which is covered or not. The counter also indicates
+	 * the execution count for this instruction.
 	 *
 	 * @return the instruction coverage counter
 	 */
 	public ICounter getInstructionCounter() {
 		return coveredBranchesCount.isEmpty() ? CounterImpl.COUNTER_1_0
-				: CounterImpl.getInstance(0, getListSum(coveredBranchesCount));
+				: CounterImpl.getInstance(0,
+						getListSum(coveredBranchesCount.values()));
 	}
 
 	/**
@@ -221,7 +235,7 @@ public class Instruction {
 			return CounterImpl.COUNTER_0_0;
 		}
 		int covered = 0;
-		for (int count : coveredBranchesCount) {
+		for (int count : coveredBranchesCount.values()) {
 			if (count > 0) {
 				covered++;
 			}

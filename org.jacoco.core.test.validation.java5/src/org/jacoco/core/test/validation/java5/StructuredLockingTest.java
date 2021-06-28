@@ -15,10 +15,7 @@ package org.jacoco.core.test.validation.java5;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.jacoco.core.instr.Instrumenter;
 import org.jacoco.core.internal.instr.InstrSupport;

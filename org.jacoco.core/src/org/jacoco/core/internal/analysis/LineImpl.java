@@ -55,10 +55,9 @@ public abstract class LineImpl implements ILine {
 	public static final LineImpl EMPTY = SINGLETONS[0][0][0][0][0];
 
 	private static LineImpl getInstance(final CounterImpl instructions,
-			final CounterImpl executions, final CounterImpl branches) {
+			final int ec, final CounterImpl branches) {
 		final int im = instructions.getMissedCount();
 		final int ic = instructions.getCoveredCount();
-		final int ec = executions.getCoveredCount();
 		final int bm = branches.getMissedCount();
 		final int bc = branches.getCoveredCount();
 		if (im <= SINGLETON_INS_LIMIT && ic <= SINGLETON_INS_LIMIT
@@ -66,23 +65,25 @@ public abstract class LineImpl implements ILine {
 				&& ec <= SINGLETON_INS_LIMIT) {
 			return SINGLETONS[im][ic][ec][bm][bc];
 		}
-		return new Var(instructions, executions, branches);
+		return new Var(instructions, ec, branches);
 	}
 
 	/**
 	 * Mutable version.
 	 */
 	private static final class Var extends LineImpl {
-		Var(final CounterImpl instructions, final CounterImpl executions,
+		Var(final CounterImpl instructions, final int executions,
 				final CounterImpl branches) {
 			super(instructions, executions, branches);
 		}
 
 		@Override
 		public LineImpl increment(final ICounter instructions,
-				final ICounter executions, final ICounter branches) {
+				final int executions, final ICounter branches) {
 			this.instructions = this.instructions.increment(instructions);
-			this.executions = this.executions.increment(executions);
+			// Set the amount of execution on this line on the max between
+			// the current executions and those to increment with.
+			this.executions = Math.max(executions, this.executions);
 			this.branches = this.branches.increment(branches);
 			return this;
 		}
@@ -94,16 +95,15 @@ public abstract class LineImpl implements ILine {
 	private static final class Fix extends LineImpl {
 		public Fix(final int im, final int ic, final int ec, final int bm,
 				final int bc) {
-			super(CounterImpl.getInstance(im, ic),
-					CounterImpl.getInstance(0, ec),
+			super(CounterImpl.getInstance(im, ic), ec,
 					CounterImpl.getInstance(bm, bc));
 		}
 
 		@Override
 		public LineImpl increment(final ICounter instructions,
-				final ICounter executions, final ICounter branches) {
+				final int executions, final ICounter branches) {
 			return getInstance(this.instructions.increment(instructions),
-					this.executions.increment(executions),
+					Math.max(this.executions, executions),
 					this.branches.increment(branches));
 		}
 	}
@@ -111,14 +111,14 @@ public abstract class LineImpl implements ILine {
 	/** instruction counter */
 	protected CounterImpl instructions;
 
-	/** instruction counter */
-	protected CounterImpl executions;
+	/** execution count */
+	protected int executions;
 
 	/** branch counter */
 	protected CounterImpl branches;
 
-	private LineImpl(final CounterImpl instructions,
-			final CounterImpl executions, final CounterImpl branches) {
+	private LineImpl(final CounterImpl instructions, final int executions,
+			final CounterImpl branches) {
 		this.instructions = instructions;
 		this.executions = executions;
 		this.branches = branches;
@@ -136,7 +136,7 @@ public abstract class LineImpl implements ILine {
 	 * @return instance with new counter values
 	 */
 	public abstract LineImpl increment(final ICounter instructions,
-			final ICounter executions, final ICounter branches);
+			final int executions, final ICounter branches);
 
 	// === ILine implementation ===
 
@@ -148,7 +148,7 @@ public abstract class LineImpl implements ILine {
 		return instructions;
 	}
 
-	public ICounter getExecutionCounter() {
+	public int getExecutionCount() {
 		return executions;
 	}
 
@@ -160,7 +160,7 @@ public abstract class LineImpl implements ILine {
 	public int hashCode() {
 		int hash = 7;
 		hash = 31 * hash + instructions.hashCode();
-		hash = 31 * hash + executions.hashCode();
+		hash = 31 * hash + executions;
 		hash = 31 * hash + branches.hashCode();
 		return hash;
 	}
@@ -170,7 +170,7 @@ public abstract class LineImpl implements ILine {
 		if (obj instanceof ILine) {
 			final ILine that = (ILine) obj;
 			return this.instructions.equals(that.getInstructionCounter())
-					&& this.executions.equals(that.getExecutionCounter())
+					&& this.executions == that.getExecutionCount()
 					&& this.branches.equals(that.getBranchCounter());
 		}
 		return false;

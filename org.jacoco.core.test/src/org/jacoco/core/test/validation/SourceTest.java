@@ -103,12 +103,12 @@ public class SourceTest {
 			throws IOException {
 		String src = "a\nb\nc";
 		SourceFileCoverageImpl sc = new SourceFileCoverageImpl("Foo", "foo");
-		sc.increment(CounterImpl.getInstance(1, 0),
-				CounterImpl.getInstance(1, 0), CounterImpl.COUNTER_0_0, 1);
-		sc.increment(CounterImpl.getInstance(2, 0),
-				CounterImpl.getInstance(2, 0), CounterImpl.COUNTER_0_0, 2);
-		sc.increment(CounterImpl.getInstance(3, 0),
-				CounterImpl.getInstance(3, 0), CounterImpl.COUNTER_0_0, 3);
+		sc.increment(CounterImpl.getInstance(1, 0), 0, CounterImpl.COUNTER_0_0,
+				1);
+		sc.increment(CounterImpl.getInstance(2, 0), 0, CounterImpl.COUNTER_0_0,
+				2);
+		sc.increment(CounterImpl.getInstance(3, 0), 0, CounterImpl.COUNTER_0_0,
+				3);
 
 		final Source s = new Source(new StringReader(src), sc);
 

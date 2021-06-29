@@ -273,14 +273,13 @@ public class Instruction {
 	}
 
 	/**
-	 * Returns a counter denoting how often this instruction has been executed.
-	 * The count is a max of all counts on every branch.
+	 * Returns the count indicating how often this instruction has been
+	 * executed. The number is a max of all counts on every branch.
 	 *
-	 * @return the instruction execution counter
+	 * @return the instruction execution count
 	 */
-	public ICounter getExecutionCounter() {
-		return coveredBranches.isEmpty() ? CounterImpl.COUNTER_1_0
-				: CounterImpl.getInstance(0,
-						getMaxOfList(coveredBranches.values()));
+	public int getExecutionCount() {
+		return coveredBranches.isEmpty() ? 0
+				: getMaxOfList(coveredBranches.values());
 	}
 }

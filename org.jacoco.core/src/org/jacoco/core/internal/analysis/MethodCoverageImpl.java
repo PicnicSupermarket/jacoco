@@ -43,9 +43,8 @@ public class MethodCoverageImpl extends SourceNodeImpl
 	}
 
 	@Override
-	public void increment(final ICounter instructions,
-			final ICounter executions, final ICounter branches,
-			final int line) {
+	public void increment(final ICounter instructions, final int executions,
+			final ICounter branches, final int line) {
 		// Note that this has only one usage (in runtime), namely from
 		// MethodCoverageCalculator.java.
 		super.increment(instructions, executions, branches, line);

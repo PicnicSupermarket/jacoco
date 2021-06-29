@@ -95,7 +95,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 			for (int i = firstLine; i <= lastLine; i++) {
 				final ILine line = child.getLine(i);
 				incrementLine(line.getInstructionCounter(),
-						line.getExecutionCounter(), line.getBranchCounter(), i);
+						line.getExecutionCount(), line.getBranchCounter(), i);
 			}
 		}
 	}
@@ -114,9 +114,8 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 * @param line
 	 *            optional line number or {@link ISourceNode#UNKNOWN_LINE}
 	 */
-	public void increment(final ICounter instructions,
-			final ICounter executions, final ICounter branches,
-			final int line) {
+	public void increment(final ICounter instructions, final int executions,
+			final ICounter branches, final int line) {
 		// Note that this has only one usage (in runtime), namely from
 		// MethodCoverageImpl.java. Therefore, this is only executed
 		// when determining a method's coverage based on the given
@@ -130,8 +129,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	}
 
 	private void incrementLine(final ICounter instructions,
-			final ICounter executions, final ICounter branches,
-			final int line) {
+			final int executions, final ICounter branches, final int line) {
 		ensureCapacity(line, line);
 		final LineImpl l = getLine(line);
 		final int oldTotal = l.getInstructionCounter().getTotalCount();

@@ -64,9 +64,8 @@ public class SourceNodeImplTest {
 	public void testIncrementLineUnknown() {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
-		node.increment(CounterImpl.getInstance(1, 2),
-				CounterImpl.getInstance(1, 2), CounterImpl.getInstance(3, 4),
-				ISourceNode.UNKNOWN_LINE);
+		node.increment(CounterImpl.getInstance(1, 2), 2,
+				CounterImpl.getInstance(3, 4), ISourceNode.UNKNOWN_LINE);
 		assertEquals(CounterImpl.getInstance(1, 2),
 				node.getInstructionCounter());
 		assertEquals(CounterImpl.getInstance(3, 4), node.getBranchCounter());
@@ -77,10 +76,10 @@ public class SourceNodeImplTest {
 	public void testIncrementLines() {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
-		node.increment(CounterImpl.getInstance(1, 1),
-				CounterImpl.getInstance(1, 1), CounterImpl.COUNTER_0_0, 10);
-		node.increment(CounterImpl.getInstance(2, 2),
-				CounterImpl.getInstance(2, 2), CounterImpl.COUNTER_0_0, 12);
+		node.increment(CounterImpl.getInstance(1, 1), 1,
+				CounterImpl.COUNTER_0_0, 10);
+		node.increment(CounterImpl.getInstance(2, 2), 2,
+				CounterImpl.COUNTER_0_0, 12);
 
 		assertEquals(CounterImpl.getInstance(1, 1),
 				node.getLine(10).getInstructionCounter());
@@ -174,10 +173,10 @@ public class SourceNodeImplTest {
 			int expectedMissedLines, int expectedCoveredLines) {
 		final SourceNodeImpl node = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
-		node.increment(CounterImpl.getInstance(mi1, ci1),
-				CounterImpl.getInstance(mi1, ci1), CounterImpl.COUNTER_0_0, 33);
-		node.increment(CounterImpl.getInstance(mi2, ci2),
-				CounterImpl.getInstance(mi2, ci2), CounterImpl.COUNTER_0_0, 33);
+		node.increment(CounterImpl.getInstance(mi1, ci1), ci1,
+				CounterImpl.COUNTER_0_0, 33);
+		node.increment(CounterImpl.getInstance(mi2, ci2), ci2,
+				CounterImpl.COUNTER_0_0, 33);
 		assertEquals(CounterImpl.getInstance(expectedMissedLines,
 				expectedCoveredLines), node.getLineCounter());
 		assertEquals(CounterImpl.getInstance(mi1 + mi2, ci1 + ci2),
@@ -212,9 +211,8 @@ public class SourceNodeImplTest {
 
 		final SourceNodeImpl child = new SourceNodeImpl(ElementType.CLASS,
 				"Foo");
-		child.increment(CounterImpl.getInstance(1, 11),
-				CounterImpl.getInstance(1, 11), CounterImpl.getInstance(3, 33),
-				5);
+		child.increment(CounterImpl.getInstance(1, 11), 11,
+				CounterImpl.getInstance(3, 33), 5);
 
 		node.increment(child);
 		node.increment(child);

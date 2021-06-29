@@ -136,8 +136,8 @@ public class BundleCheckerTest implements IViolationsOutput {
 	private IBundleCoverage createBundle() {
 		final MethodCoverageImpl m = new MethodCoverageImpl("fooMethod", "()V",
 				null);
-		m.increment(CounterImpl.getInstance(5, 5),
-				CounterImpl.getInstance(5, 10), CounterImpl.COUNTER_0_0, 1);
+		m.increment(CounterImpl.getInstance(5, 5), 5, CounterImpl.COUNTER_0_0,
+				1);
 		m.incrementMethodCounter();
 
 		final ClassCoverageImpl c = new ClassCoverageImpl(

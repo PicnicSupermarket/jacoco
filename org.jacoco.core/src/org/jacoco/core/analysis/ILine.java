@@ -46,9 +46,9 @@ public interface ILine {
 	int getStatus();
 
 	/**
-	 * Returns the execution counter for this line
+	 * Returns the execution count for this line
 	 *
-	 * @return execution counter
+	 * @return execution count
 	 */
-	ICounter getExecutionCounter();
+	int getExecutionCount();
 }

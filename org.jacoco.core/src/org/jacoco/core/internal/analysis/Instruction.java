@@ -118,6 +118,7 @@ public class Instruction {
 				max = Math.max(max, count);
 			}
 			propagateExecutedBranch(this, branch, max);
+			int a = 0;
 		}
 	}
 
@@ -186,12 +187,10 @@ public class Instruction {
 
 		for (Map.Entry<Integer, Integer> entry : other.coveredBranches
 				.entrySet()) {
-			// Again, not sure how these instructions work, but I assume we
-			// want to merge execution counts when branches are merged as well.
 			if (result.coveredBranches.containsKey(entry.getKey())) {
 				result.coveredBranches.put(entry.getKey(),
-						result.coveredBranches.get(entry.getKey())
-								+ entry.getValue());
+						Math.max(result.coveredBranches.get(entry.getKey()),
+								entry.getValue()));
 			} else {
 				result.coveredBranches.put(entry.getKey(), entry.getValue());
 			}
@@ -216,13 +215,10 @@ public class Instruction {
 		int idx = 0;
 		for (final Instruction b : newBranches) {
 			if (!b.coveredBranches.isEmpty()) {
-				// The given instruction has been executed before. Here we
-				// assume that if the instruction had multiple branches
-				// executed, that there were multiple passes on this instruction
-				// and therefore we sum the branches, similar to the instruction
-				// counter.
+				// The given instruction has been executed before. We take the
+				// maximum amount of the branches covered.
 				result.coveredBranches.put(idx++,
-						getListSum(b.coveredBranches.values()));
+						getMaxOfList(b.coveredBranches.values()));
 			}
 		}
 		return result;
@@ -234,6 +230,16 @@ public class Instruction {
 			sum += integer;
 		}
 		return sum;
+	}
+
+	private int getMaxOfList(Collection<Integer> list) {
+		int max = 1;
+		for (int value : list) {
+			if (value > max) {
+				max = value;
+			}
+		}
+		return max;
 	}
 
 	/**
@@ -268,13 +274,13 @@ public class Instruction {
 
 	/**
 	 * Returns a counter denoting how often this instruction has been executed.
-	 * The count is a sum of all counts on every branch.
+	 * The count is a max of all counts on every branch.
 	 *
 	 * @return the instruction execution counter
 	 */
-	public ICounter getExecutionCount() {
+	public ICounter getExecutionCounter() {
 		return coveredBranches.isEmpty() ? CounterImpl.COUNTER_1_0
 				: CounterImpl.getInstance(0,
-						getListSum(coveredBranches.values()));
+						getMaxOfList(coveredBranches.values()));
 	}
 }

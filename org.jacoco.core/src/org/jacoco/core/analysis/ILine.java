@@ -45,4 +45,10 @@ public interface ILine {
 	 */
 	int getStatus();
 
+	/**
+	 * Returns the execution counter for this line
+	 *
+	 * @return execution counter
+	 */
+	ICounter getExecutionCounter();
 }

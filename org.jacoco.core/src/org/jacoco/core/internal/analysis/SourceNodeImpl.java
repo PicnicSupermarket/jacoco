@@ -95,7 +95,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 			for (int i = firstLine; i <= lastLine; i++) {
 				final ILine line = child.getLine(i);
 				incrementLine(line.getInstructionCounter(),
-						line.getBranchCounter(), i);
+						line.getExecutionCounter(), line.getBranchCounter(), i);
 			}
 		}
 	}
@@ -122,37 +122,36 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 		// when determining a method's coverage based on the given
 		// instruction.
 		if (line != UNKNOWN_LINE) {
-			incrementLine(executions, branches, line);
+			incrementLine(instructions, executions, branches, line);
 		}
 
 		instructionCounter = instructionCounter.increment(instructions);
 		branchCounter = branchCounter.increment(branches);
 	}
 
-	private void incrementLine(final ICounter executions,
-			final ICounter branches, final int line) {
-		// TODO: This is where the magic happens for us. Validate all paths now
-		// that we have execution.
+	private void incrementLine(final ICounter instructions,
+			final ICounter executions, final ICounter branches,
+			final int line) {
 		ensureCapacity(line, line);
 		final LineImpl l = getLine(line);
 		final int oldTotal = l.getInstructionCounter().getTotalCount();
 		final int oldCovered = l.getInstructionCounter().getCoveredCount();
-		lines[line - offset] = l.increment(executions, branches);
+		lines[line - offset] = l.increment(instructions, executions, branches);
 
 		// Increment line counter:
-		if (executions.getTotalCount() > 0) {
-			if (executions.getCoveredCount() == 0) {
+		if (instructions.getTotalCount() > 0) {
+			if (instructions.getCoveredCount() == 0) {
 				if (oldTotal == 0) {
 					lineCounter = lineCounter
 							.increment(CounterImpl.COUNTER_1_0);
 				}
 			} else {
 				if (oldTotal == 0) {
-					lineCounter = lineCounter.increment(executions);
+					lineCounter = lineCounter.increment(instructions);
 				} else {
 					if (oldCovered == 0) {
 						lineCounter = lineCounter.increment(-1,
-								executions.getCoveredCount());
+								instructions.getCoveredCount());
 					}
 				}
 			}

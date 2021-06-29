@@ -18,9 +18,9 @@ import org.jacoco.core.internal.analysis.Instruction;
  * A counter holds the missed and the covered number of particular items like
  * classes, methods, branches or instructions.
  *
- * Note that in the context of executions, that {@code covered} means the
- * total amount of times the instruction was executed. See {@link
- * Instruction#getExecutionCount()}.
+ * Note that in the context of executions, that {@code covered} means the total
+ * amount of times the instruction was executed. See
+ * {@link Instruction#getExecutionCounter()}.
  */
 public interface ICounter {
 

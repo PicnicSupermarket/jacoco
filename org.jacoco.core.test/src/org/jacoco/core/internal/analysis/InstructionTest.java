@@ -68,6 +68,8 @@ public class InstructionTest {
 
 		assertEquals(CounterImpl.COUNTER_0_1,
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.COUNTER_0_1,
+				instruction.getExecutionCounter());
 	}
 
 	@Test
@@ -75,8 +77,10 @@ public class InstructionTest {
 		instruction.addBranch(1, 0);
 		instruction.addBranch(1, 1);
 
-		assertEquals(CounterImpl.getInstance(0, 2),
+		assertEquals(CounterImpl.getInstance(0, 1),
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(0, 1),
+				instruction.getExecutionCounter());
 		assertEquals(CounterImpl.getInstance(0, 2),
 				instruction.getBranchCounter());
 	}
@@ -88,6 +92,8 @@ public class InstructionTest {
 
 		assertEquals(CounterImpl.getInstance(1, 0),
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(1, 0),
+				instruction.getExecutionCounter());
 		assertEquals(CounterImpl.getInstance(2, 0),
 				instruction.getBranchCounter());
 	}
@@ -97,8 +103,10 @@ public class InstructionTest {
 		instruction.addBranch(0, 0);
 		instruction.addBranch(1, 1);
 
-		assertEquals(CounterImpl.getInstance(0, 1),
+		assertEquals(CounterImpl.COUNTER_0_1,
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.COUNTER_0_1,
+				instruction.getExecutionCounter());
 		assertEquals(CounterImpl.getInstance(1, 1),
 				instruction.getBranchCounter());
 	}
@@ -114,6 +122,8 @@ public class InstructionTest {
 
 		assertEquals(CounterImpl.COUNTER_0_1,
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.COUNTER_0_1,
+				instruction.getExecutionCounter());
 	}
 
 	@Test
@@ -138,6 +148,8 @@ public class InstructionTest {
 
 		assertEquals(CounterImpl.COUNTER_0_1,
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.COUNTER_0_1,
+				instruction.getExecutionCounter());
 	}
 
 	@Test
@@ -156,8 +168,10 @@ public class InstructionTest {
 
 		instruction = i1.merge(i2);
 
-		assertEquals(CounterImpl.getInstance(0, 6),
+		assertEquals(CounterImpl.getInstance(0, 1),
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(0, 2),
+				instruction.getExecutionCounter());
 		assertEquals(CounterImpl.getInstance(1, 4),
 				instruction.getBranchCounter());
 	}
@@ -173,8 +187,10 @@ public class InstructionTest {
 
 		instruction = instruction.replaceBranches(Arrays.asList(i1, i2, i3));
 
-		assertEquals(CounterImpl.getInstance(0, 4),
+		assertEquals(CounterImpl.getInstance(0, 1),
 				instruction.getInstructionCounter());
+		assertEquals(CounterImpl.getInstance(0, 2),
+				instruction.getExecutionCounter());
 		assertEquals(CounterImpl.getInstance(1, 2),
 				instruction.getBranchCounter());
 	}

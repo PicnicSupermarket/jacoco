@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.jacoco.core.analysis;
 
+import static org.jacoco.core.internal.analysis.CounterImpl.COUNTER_0_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -80,12 +81,9 @@ public class CoverageBuilderTest {
 	public void testCreateClassCovered() {
 		final MethodCoverageImpl method = new MethodCoverageImpl("doit", "()V",
 				null);
-		method.increment(CounterImpl.COUNTER_0_1,
-				CounterImpl.getInstance(0, 50), CounterImpl.COUNTER_0_0, 6);
-		method.increment(CounterImpl.COUNTER_0_1,
-				CounterImpl.getInstance(0, 50), CounterImpl.COUNTER_0_0, 7);
-		method.increment(CounterImpl.COUNTER_0_1,
-				CounterImpl.getInstance(0, 50), CounterImpl.COUNTER_0_0, 8);
+		method.increment(COUNTER_0_1, COUNTER_0_1, CounterImpl.COUNTER_0_0, 6);
+		method.increment(COUNTER_0_1, COUNTER_0_1, CounterImpl.COUNTER_0_0, 7);
+		method.increment(COUNTER_0_1, COUNTER_0_1, CounterImpl.COUNTER_0_0, 8);
 		method.incrementMethodCounter();
 		addClass(123L, false, "Sample", null, method);
 

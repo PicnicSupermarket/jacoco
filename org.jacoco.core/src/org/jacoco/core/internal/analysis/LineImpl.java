@@ -34,7 +34,7 @@ public abstract class LineImpl implements ILine {
 			SINGLETONS[i] = new LineImpl[SINGLETON_INS_LIMIT + 1][][][];
 			for (int j = 0; j <= SINGLETON_INS_LIMIT; j++) {
 				SINGLETONS[i][j] = new LineImpl[SINGLETON_INS_LIMIT + 1][][];
-				for (int k = 0; k < SINGLETON_INS_LIMIT; k++) {
+				for (int k = 0; k <= SINGLETON_INS_LIMIT; k++) {
 					SINGLETONS[i][j][k] = new LineImpl[SINGLETON_BRA_LIMIT
 							+ 1][];
 					for (int l = 0; l <= SINGLETON_BRA_LIMIT; l++) {

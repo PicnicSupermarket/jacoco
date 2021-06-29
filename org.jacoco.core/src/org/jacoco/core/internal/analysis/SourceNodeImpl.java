@@ -147,11 +147,11 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 				}
 			} else {
 				if (oldTotal == 0) {
-					lineCounter = lineCounter.increment(instructions);
+					lineCounter = lineCounter
+							.increment(CounterImpl.COUNTER_0_1);
 				} else {
 					if (oldCovered == 0) {
-						lineCounter = lineCounter.increment(-1,
-								instructions.getCoveredCount());
+						lineCounter = lineCounter.increment(-1, +1);
 					}
 				}
 			}

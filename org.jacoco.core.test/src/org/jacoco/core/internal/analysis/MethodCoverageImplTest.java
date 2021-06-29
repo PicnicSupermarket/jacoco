@@ -61,7 +61,7 @@ public class MethodCoverageImplTest {
 	public void testIncrementCoveredInstructions() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
 		node.increment(CounterImpl.getInstance(12, 13),
-				CounterImpl.getInstance(12, 29), CounterImpl.COUNTER_0_0, 3);
+				CounterImpl.getInstance(12, 13), CounterImpl.COUNTER_0_0, 3);
 		node.incrementMethodCounter();
 		assertEquals(CounterImpl.COUNTER_0_1, node.getMethodCounter());
 		assertEquals(CounterImpl.COUNTER_0_1, node.getComplexityCounter());

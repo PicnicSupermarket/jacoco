@@ -13,6 +13,7 @@
 package org.jacoco.report.internal.html.page;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
@@ -100,6 +101,8 @@ public class SourceHighlighterTest {
 				htmlSupport.findStr(doc, "//pre/span[text() = 'A']/@class"));
 		assertEquals(Styles.PARTLY_COVERED,
 				htmlSupport.findStr(doc, "//pre/span[text() = 'B']/@class"));
+		assertTrue(htmlSupport.findStr(doc, "//pre/span[text() = 'B']/@title")
+				.contains("Executions: 10."));
 		assertEquals(Styles.FULLY_COVERED,
 				htmlSupport.findStr(doc, "//pre/span[text() = 'C']/@class"));
 		assertEquals("",
@@ -120,7 +123,7 @@ public class SourceHighlighterTest {
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("fc bfc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("All 5 branches covered.",
+		assertEquals("All 5 branches covered. Executions: 10.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 
@@ -131,7 +134,7 @@ public class SourceHighlighterTest {
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bpc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("2 of 5 branches missed.",
+		assertEquals("2 of 5 branches missed. Executions: 10.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 
@@ -142,7 +145,7 @@ public class SourceHighlighterTest {
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bnc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("All 5 branches missed.",
+		assertEquals("All 5 branches missed. Executions: 10.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 

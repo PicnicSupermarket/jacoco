@@ -102,31 +102,43 @@ final class SourceHighlighter {
 			return pre;
 		}
 
+		final int executions = line.getExecutionCounter().getCoveredCount();
 		final String lineId = "L" + Integer.toString(lineNr);
 		final ICounter branches = line.getBranchCounter();
 		switch (branches.getStatus()) {
 		case ICounter.NOT_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_NOT_COVERED,
-					"All %2$d branches missed.", branches);
+					executions, "All %2$d branches missed. Executions: %3$d.",
+					branches);
 		case ICounter.FULLY_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_FULLY_COVERED,
-					"All %2$d branches covered.", branches);
+					executions, "All %2$d branches covered. Executions: %3$d.",
+					branches);
 		case ICounter.PARTLY_COVERED:
 			return span(pre, lineId, style, Styles.BRANCH_PARTLY_COVERED,
-					"%1$d of %2$d branches missed.", branches);
+					executions,
+					"%1$d of %2$d branches missed. Executions: %3$d.",
+					branches);
 		default:
-			return pre.span(style, lineId);
+			return span(pre, lineId, style,
+					String.format(locale, "Executions: %1$d.", executions));
 		}
 	}
 
 	private HTMLElement span(final HTMLElement parent, final String id,
-			final String style1, final String style2, final String title,
-			final ICounter branches) throws IOException {
-		final HTMLElement span = parent.span(style1 + " " + style2, id);
-		final Integer missed = Integer.valueOf(branches.getMissedCount());
-		final Integer total = Integer.valueOf(branches.getTotalCount());
-		span.attr("title", String.format(locale, title, missed, total));
+			final String classAttr, final String title) throws IOException {
+		final HTMLElement span = parent.span(classAttr, id);
+		span.attr("title", title);
 		return span;
 	}
 
+	private HTMLElement span(final HTMLElement parent, final String id,
+			final String style1, final String style2, final int executions,
+			final String title, final ICounter branches) throws IOException {
+		final Integer missed = Integer.valueOf(branches.getMissedCount());
+		final Integer total = Integer.valueOf(branches.getTotalCount());
+		final String formattedTitle = String.format(locale, title, missed,
+				total, executions);
+		return span(parent, id, style1 + " " + style2, formattedTitle);
+	}
 }

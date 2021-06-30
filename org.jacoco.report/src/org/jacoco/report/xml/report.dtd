@@ -70,6 +70,8 @@
   <!ATTLIST line mi CDATA #IMPLIED>
   <!-- number of covered instructions -->
   <!ATTLIST line ci CDATA #IMPLIED>
+  <!-- number of executions -->
+  <!ATTLIST line ec CDATA #IMPLIED>
   <!-- number of missed branches -->
   <!ATTLIST line mb CDATA #IMPLIED>
   <!-- number of covered branches -->

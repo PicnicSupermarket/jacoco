@@ -58,9 +58,7 @@ public class Instruction {
 
 	private int branches;
 
-	// Map showing which branches have been executed and how often. If a branch
-	// is not present, it has not been executed.
-	private final HashMap<Integer, Integer> coveredBranches;
+	private final Map<Integer, Integer> coveredBranches;
 
 	private Instruction predecessor;
 
@@ -75,10 +73,6 @@ public class Instruction {
 	public Instruction(final int line) {
 		this.line = line;
 		this.branches = 0;
-		// For boolean[] we can use a BitSet. However, for integers, List
-		// implementations do not suffice as we don't know the size
-		// beforehand and we can not inject with index without growing the
-		// list manually.
 		this.coveredBranches = new HashMap<Integer, Integer>();
 	}
 
@@ -86,8 +80,8 @@ public class Instruction {
 	 * Adds a branch to this instruction which execution status is indirectly
 	 * derived from the execution status of the target instruction. In case the
 	 * branch is covered the status is propagated also to the predecessors of
-	 * this instruction. In such case, we do not sum the execution count but
-	 * take the max.
+	 * this instruction. For this, we take the sum of the target branches'
+	 * execution count.
 	 *
 	 * Note: This method is not idempotent and must be called exactly once for
 	 * every branch.
@@ -102,22 +96,12 @@ public class Instruction {
 		target.predecessor = this;
 		target.predecessorBranch = branch;
 		if (!target.coveredBranches.isEmpty()) {
-			// I don't understand how JaCoCo does not consider the target's
-			// branch when setting the coverage info on the current instruction.
-			// I guess Jacoco just did consider whether the target was executed
-			// or not. However, now that we use counts, we need to determine
-			// which branch in target.coveredBranchesCount we need to consider.
-			// We can not use the given `branch` as that is from the perspective
-			// of this instruction's branching, not the target's one. Those
-			// don't always match (see
-			// 'addBranchWithProbe_should_propagate_coverage_status_to_existing_predecessors'
-			// in InstructionTest.java. For now, we just go with the maximum
-			// count.
-			int max = 1;
-			for (int count : target.coveredBranches.values()) {
-				max = Math.max(max, count);
-			}
-			propagateExecutedBranch(this, branch, max);
+			// As an instruction can only have one predecessor, we assume
+			// that every execution on the target's branches is coming from
+			// the current instruction. Therefore, we must sum the target's
+			// branch executions.
+			propagateExecutedBranch(this, branch,
+					getListSum(target.coveredBranches.values()));
 		}
 	}
 
@@ -146,11 +130,11 @@ public class Instruction {
 		// No recursion here, as there can be very long chains of instructions
 		while (insn != null) {
 			if (!insn.coveredBranches.isEmpty()) {
-				// Instead of just setting `branch` to `true`, we set it to the
-				// max of the current value or the count we want to set it to.
-				// We do this because these changes are propagated and we don't
-				// want to keep increasing downstream branches with total
-				// counts.
+				// As propagation happens multiple times in the chain, we can
+				// not just increment the execution count. Instead, we need to
+				// set it to the max of the value that we already have or the
+				// value that is coming in from upstream. Otherwise, we will
+				// count more executions than actually happened.
 				Integer existing = insn.coveredBranches.get(branch);
 				insn.coveredBranches.put(branch,
 						existing == null ? count : Math.max(existing, count));
@@ -187,10 +171,14 @@ public class Instruction {
 		for (Map.Entry<Integer, Integer> entry : other.coveredBranches
 				.entrySet()) {
 			if (result.coveredBranches.containsKey(entry.getKey())) {
+				// We have already covered the branch before so we need
+				// to add the two instructions together.
 				result.coveredBranches.put(entry.getKey(),
-						Math.max(result.coveredBranches.get(entry.getKey()),
-								entry.getValue()));
+						result.coveredBranches.get(entry.getKey())
+								+ entry.getValue());
 			} else {
+				// The branch was not covered before, so we can just set it
+				// to the value of the other instruction.
 				result.coveredBranches.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -214,31 +202,16 @@ public class Instruction {
 		int idx = 0;
 		for (final Instruction b : newBranches) {
 			if (!b.coveredBranches.isEmpty()) {
-				// The given instruction has been executed before. We take the
-				// maximum amount of the branches covered.
+				// The instruction that we need to replace the branch with
+				// has been executed before. To not lose execution count
+				// data, we sum all of its execution counts on every branch
+				// and set it to the current instruction's branch that will
+				// be replaced.
 				result.coveredBranches.put(idx++,
-						getMaxOfList(b.coveredBranches.values()));
+						getListSum(b.coveredBranches.values()));
 			}
 		}
 		return result;
-	}
-
-	private int getListSum(Collection<Integer> list) {
-		int sum = 0;
-		for (int integer : list) {
-			sum += integer;
-		}
-		return sum;
-	}
-
-	private int getMaxOfList(Collection<Integer> list) {
-		int max = 1;
-		for (int value : list) {
-			if (value > max) {
-				max = value;
-			}
-		}
-		return max;
 	}
 
 	/**
@@ -280,5 +253,13 @@ public class Instruction {
 	public int getExecutionCount() {
 		return coveredBranches.isEmpty() ? 0
 				: getListSum(coveredBranches.values());
+	}
+
+	private int getListSum(Collection<Integer> list) {
+		int sum = 0;
+		for (int integer : list) {
+			sum += integer;
+		}
+		return sum;
 	}
 }

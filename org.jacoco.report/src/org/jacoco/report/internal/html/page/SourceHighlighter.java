@@ -102,7 +102,7 @@ final class SourceHighlighter {
 			return pre;
 		}
 
-		final int executions = line.getExecutionCounter().getCoveredCount();
+		final int executions = line.getExecutionCount();
 		final String lineId = "L" + Integer.toString(lineNr);
 		final ICounter branches = line.getBranchCounter();
 		switch (branches.getStatus()) {

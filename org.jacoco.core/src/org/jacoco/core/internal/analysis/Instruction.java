@@ -118,7 +118,6 @@ public class Instruction {
 				max = Math.max(max, count);
 			}
 			propagateExecutedBranch(this, branch, max);
-			int a = 0;
 		}
 	}
 
@@ -280,6 +279,6 @@ public class Instruction {
 	 */
 	public int getExecutionCount() {
 		return coveredBranches.isEmpty() ? 0
-				: getMaxOfList(coveredBranches.values());
+				: getListSum(coveredBranches.values());
 	}
 }

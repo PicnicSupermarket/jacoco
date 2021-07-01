@@ -83,7 +83,6 @@ public final class ExecDump {
 	}
 
 	private int getHitCount(final int[] data) {
-		// TODO: Does this make sense or should we rather sum the int[]?
 		int count = 0;
 		for (final int hit : data) {
 			if (hit > 0) {

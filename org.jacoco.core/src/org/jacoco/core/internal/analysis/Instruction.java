@@ -235,12 +235,7 @@ public class Instruction {
 		if (branches < 2) {
 			return CounterImpl.COUNTER_0_0;
 		}
-		int covered = 0;
-		for (int count : coveredBranches.values()) {
-			if (count > 0) {
-				covered++;
-			}
-		}
+		final int covered = coveredBranches.values().size();
 		return CounterImpl.getInstance(branches - covered, covered);
 	}
 
@@ -257,8 +252,8 @@ public class Instruction {
 
 	private int getListSum(Collection<Integer> list) {
 		int sum = 0;
-		for (int integer : list) {
-			sum += integer;
+		for (int value : list) {
+			sum += value;
 		}
 		return sum;
 	}

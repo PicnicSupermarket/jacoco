@@ -116,10 +116,6 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 */
 	public void increment(final ICounter instructions, final int executions,
 			final ICounter branches, final int line) {
-		// Note that this has only one usage (in runtime), namely from
-		// MethodCoverageImpl.java. Therefore, this is only executed
-		// when determining a method's coverage based on the given
-		// instruction.
 		if (line != UNKNOWN_LINE) {
 			incrementLine(instructions, executions, branches, line);
 		}

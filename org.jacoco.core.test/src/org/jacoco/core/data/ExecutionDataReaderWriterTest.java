@@ -296,8 +296,6 @@ public class ExecutionDataReaderWriterTest {
 		});
 		broken[0] = 1;
 		writer.visitClassExecution(
-				// We need integer > 0 to enable class being 'hit' resulting in
-				// writing values
 				new ExecutionData(3, "Sample", new int[] { 1 }));
 	}
 

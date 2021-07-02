@@ -61,9 +61,9 @@ public class RuntimeDataTest {
 		data.collect(storage, storage, false);
 		int[] data = (int[]) args[0];
 		assertEquals(3, data.length, 0.0);
-		assertFalse(data[0] > 0);
-		assertFalse(data[1] > 0);
-		assertFalse(data[2] > 0);
+		assertEquals(0, data[0]);
+		assertEquals(0, data[1]);
+		assertEquals(0, data[2]);
 		assertSame(storage.getData(123).getProbes(), data);
 		assertEquals("Foo", storage.getData(123).getName());
 	}
@@ -83,7 +83,7 @@ public class RuntimeDataTest {
 
 		data.collect(storage, storage, true);
 
-		assertFalse(probes[0] > 0);
+		assertEquals(0, probes[0]);
 		assertEquals("testsession", storage.getSessionInfo().getId());
 	}
 

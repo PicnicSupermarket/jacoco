@@ -109,9 +109,9 @@ public class ExecutionDataStoreTest implements IExecutionDataVisitor {
 		assertEquals(1000, data.getId());
 		assertEquals("Sample", data.getName());
 		assertEquals(3, data.getProbes().length);
-		assertFalse(data.getProbes()[0] > 0);
-		assertFalse(data.getProbes()[1] > 0);
-		assertFalse(data.getProbes()[2] > 0);
+		assertEquals(0, data.getProbes()[0]);
+		assertEquals(0, data.getProbes()[1]);
+		assertEquals(0, data.getProbes()[2]);
 		assertSame(data, store.get(id, "Sample", 3));
 		assertTrue(store.contains("Sample"));
 	}

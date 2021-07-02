@@ -84,7 +84,7 @@ public class ExecutionDataReaderWriterTest {
 			}
 		};
 		new ExecutionDataWriter(out).flush();
-		assertTrue(flushCalled[0] > 0);
+		assertEquals(1, flushCalled[0]);
 	}
 
 	@Test

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -273,7 +272,7 @@ public class AgentTest implements IExceptionLogger, IAgentOutput {
 
 		agent.reset();
 
-		assertFalse(probes[0] > 0);
+		assertEquals(0, probes[0]);
 	}
 
 	@Test
@@ -306,7 +305,7 @@ public class AgentTest implements IExceptionLogger, IAgentOutput {
 
 		agent.getExecutionData(true);
 
-		assertFalse(probes[0] > 0);
+		assertEquals(0, probes[0]);
 	}
 
 	@Test

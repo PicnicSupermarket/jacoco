@@ -30,9 +30,9 @@ public class ExecutionDataTest {
 		assertEquals(5, e.getId());
 		assertEquals("Example", e.getName());
 		assertEquals(3, e.getProbes().length);
-		assertFalse(e.getProbes()[0] > 0);
-		assertFalse(e.getProbes()[1] > 0);
-		assertFalse(e.getProbes()[2] > 0);
+		assertEquals(0, e.getProbes()[0]);
+		assertEquals(0, e.getProbes()[1]);
+		assertEquals(0, e.getProbes()[2]);
 	}
 
 	@Test
@@ -49,9 +49,9 @@ public class ExecutionDataTest {
 		final ExecutionData e = new ExecutionData(5, "Example",
 				new int[] { 1, 0, 2 });
 		e.reset();
-		assertFalse(e.getProbes()[0] > 0);
-		assertFalse(e.getProbes()[1] > 0);
-		assertFalse(e.getProbes()[2] > 0);
+		assertEquals(0, e.getProbes()[0]);
+		assertEquals(0, e.getProbes()[1]);
+		assertEquals(0, e.getProbes()[2]);
 	}
 
 	@Test

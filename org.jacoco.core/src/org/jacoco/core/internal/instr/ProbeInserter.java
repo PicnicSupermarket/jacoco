@@ -84,6 +84,28 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 		// Stack[1]: I
 		// Stack[0]: [I
+		// Retrieve the value from the array
+		mv.visitInsn(Opcodes.IALOAD);
+
+		// Stack[0]: I
+		// Load the max integer value on the stack
+		mv.visitLdcInsn(Integer.MAX_VALUE);
+
+		// Stack[1]: I
+		// Stack[0]: I
+		// If ints are equal, jump (skips incrementing value).
+		final Label label = new Label();
+		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+
+		// Retrieve the int[] containing coverage information
+		mv.visitVarInsn(Opcodes.ALOAD, variable);
+
+		// Stack[0]: [I
+		// Pushes the index of the array we want to retrieve on the stack
+		InstrSupport.push(mv, id);
+
+		// Stack[1]: I
+		// Stack[0]: [I
 		// Duplicate the top two stack items as we want to do both lookup and
 		// storage.
 		mv.visitInsn(Opcodes.DUP2);
@@ -115,6 +137,9 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Store the summed value in the integer array at the index which we
 		// already had on the stack
 		mv.visitInsn(Opcodes.IASTORE);
+
+		// Add label to jump to.
+		mv.visitLabel(label);
 	}
 
 	@Override

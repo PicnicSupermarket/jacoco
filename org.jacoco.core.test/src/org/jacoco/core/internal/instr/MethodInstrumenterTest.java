@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 
 /**
  * Unit tests for {@link MethodInstrumenter}.
@@ -43,7 +44,7 @@ public class MethodInstrumenterTest {
 		expectedVisitor = expected.getVisitor();
 		final IProbeInserter probeInserter = new IProbeInserter() {
 
-			public void insertProbe(int id) {
+			public void insertProbe(int id, IFrame frame) {
 				actual.getVisitor().visitLdcInsn("Probe " + id);
 			}
 		};

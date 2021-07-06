@@ -15,6 +15,7 @@ package org.jacoco.core.internal.flow;
 import org.jacoco.core.internal.instr.InstrSupport;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.MethodNode;
 
 /**
@@ -46,9 +47,11 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *
 	 * @param probeId
 	 *            id of the probe to insert
+	 * @param frame
+	 * 			  the frame containing stackmap data before probe
 	 */
 	@SuppressWarnings("unused")
-	public void visitProbe(final int probeId) {
+	public void visitProbe(final int probeId, final IFrame frame) {
 	}
 
 	/**
@@ -71,11 +74,13 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            stackmap frame status after the execution of the jump
 	 *            instruction. The instance is only valid with the call of this
 	 *            method.
+	 * @param beforeProbeFrame
+	 * 			  the frame containing stackmap data before probe
 	 * @see MethodVisitor#visitJumpInsn(int, Label)
 	 */
 	@SuppressWarnings("unused")
 	public void visitJumpInsnWithProbe(final int opcode, final Label label,
-			final int probeId, final IFrame frame) {
+			final int probeId, final IFrame frame, final IFrame beforeProbeFrame) {
 	}
 
 	/**
@@ -89,10 +94,12 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            ATHROW.
 	 * @param probeId
 	 *            id of the probe
+	 * @param frame
+	 * 			  the frame containing stackmap data before probe
 	 * @see MethodVisitor#visitInsn(int)
 	 */
 	@SuppressWarnings("unused")
-	public void visitInsnWithProbe(final int opcode, final int probeId) {
+	public void visitInsnWithProbe(final int opcode, final int probeId, final IFrame frame) {
 	}
 
 	/**
@@ -116,11 +123,13 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            stackmap frame status after the execution of the switch
 	 *            instruction. The instance is only valid with the call of this
 	 *            method.
+	 * @param beforeProbeFrame
+	 * 			  the frame containing stackmap data before probe
 	 * @see MethodVisitor#visitTableSwitchInsn(int, int, Label, Label[])
 	 */
 	@SuppressWarnings("unused")
 	public void visitTableSwitchInsnWithProbes(final int min, final int max,
-			final Label dflt, final Label[] labels, final IFrame frame) {
+			final Label dflt, final Label[] labels, final IFrame frame, final IFrame beforeProbeFrame) {
 	}
 
 	/**
@@ -142,11 +151,13 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            stackmap frame status after the execution of the switch
 	 *            instruction. The instance is only valid with the call of this
 	 *            method.
+	 * @param beforeProbeFrame
+	 * 			  the frame containing stackmap data before probe
 	 * @see MethodVisitor#visitLookupSwitchInsn(Label, int[], Label[])
 	 */
 	@SuppressWarnings("unused")
 	public void visitLookupSwitchInsnWithProbes(final Label dflt,
-			final int[] keys, final Label[] labels, final IFrame frame) {
+			final int[] keys, final Label[] labels, final IFrame frame, final IFrame beforeProbeFrame) {
 	}
 
 	/**

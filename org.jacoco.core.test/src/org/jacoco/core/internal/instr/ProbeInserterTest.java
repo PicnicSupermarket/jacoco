@@ -14,6 +14,7 @@ package org.jacoco.core.internal.instr;
 
 import static org.junit.Assert.assertEquals;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ICMPEQ;
 import org.jacoco.core.instr.MethodRecorder;
 import org.junit.After;
 import org.junit.Before;
@@ -66,11 +67,18 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
+		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE);
+		Label label = new Label();
+		expectedVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
+		expectedVisitor.visitLabel(label);
 	}
 
 	@Test
@@ -81,11 +89,18 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 1);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
+		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE);
+		Label label = new Label();
+		expectedVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 1);
+		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
+		expectedVisitor.visitLabel(label);
 	}
 
 	@Test
@@ -96,11 +111,18 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 4);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
+		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE);
+		Label label = new Label();
+		expectedVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 4);
+		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
+		expectedVisitor.visitLabel(label);
 	}
 
 	@Test
@@ -111,11 +133,19 @@ public class ProbeInserterTest {
 
 		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 5);
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
+		expectedVisitor.visitInsn(Opcodes.IALOAD);
+		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE);
+		Label label = new Label();
+		expectedVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+		expectedVisitor.visitVarInsn(Opcodes.ALOAD, 5);
+		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
+		expectedVisitor.visitLabel(label);
+
 	}
 
 	@Test

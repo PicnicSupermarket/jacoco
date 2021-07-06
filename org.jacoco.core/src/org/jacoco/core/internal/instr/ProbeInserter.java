@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.jacoco.core.internal.instr;
 
+import org.jacoco.core.internal.flow.IFrame;
 import org.objectweb.asm.*;
+import org.objectweb.asm.commons.AnalyzerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Internal utility to add probes into the control flow of a method. The code
@@ -74,7 +79,10 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	 * @param id
 	 *            the position to increment
 	 */
-	public void insertProbe(final int id) {
+	public void insertProbe(final int id, final IFrame frame) {
+		// Snapshot the current stackmap
+		frame.accept(mv);
+
 		// Retrieve the int[] containing coverage information
 		mv.visitVarInsn(Opcodes.ALOAD, variable);
 
@@ -140,6 +148,9 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 		// Add label to jump to.
 		mv.visitLabel(label);
+
+		// Stackmap should be the same as before we inserted the probe
+		frame.accept(mv);
 	}
 
 	@Override
@@ -228,6 +239,23 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 			}
 		}
 		mv.visitFrame(type, newIdx, newLocal, nStack, stack);
+	}
+
+	// From https://github.com/gmu-swe/crochet/blob/2096d5d1ea7ca0ddd4b1ff7a2b679f5e6911387a/src/main/java/net/jonbell/crij/instrument/StackElementCapturingMV.java#L57
+	private static Object[] removeLongsDoubleTopVal(List<Object> in) {
+		ArrayList<Object> ret = new ArrayList<Object>();
+		boolean lastWas2Word = false;
+		for (Object n : in) {
+			if ((n == Opcodes.TOP) && lastWas2Word) {
+				// nop
+			} else
+				ret.add(n);
+			if (n == Opcodes.DOUBLE || n == Opcodes.LONG)
+				lastWas2Word = true;
+			else
+				lastWas2Word = false;
+		}
+		return ret.toArray();
 	}
 
 }

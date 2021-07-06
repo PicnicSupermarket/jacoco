@@ -24,6 +24,9 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 /**
  * Adapter that creates additional visitor events for probes to be inserted into
  * a method.
+ * TODO:
+ *  With every probe, we should set the stack frame before and after the probe
+ *  Here we can snapshot it and forward it.
  */
 public final class MethodProbesAdapter extends MethodVisitor {
 

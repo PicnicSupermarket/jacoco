@@ -79,7 +79,7 @@ public class Instrumenter {
 		final ClassWriter writer = new ClassWriter(reader, 0) {
 			@Override
 			protected String getCommonSuperClass(final String type1,
-												 final String type2) {
+					final String type2) {
 				throw new IllegalStateException();
 			}
 		};

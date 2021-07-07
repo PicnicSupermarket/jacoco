@@ -26,8 +26,6 @@ interface IProbeInserter {
 	 *
 	 * @param id
 	 *            id of the probe to insert
-	 * @param frame
-	 * 			  the frame with stackmap data before probe insertion
 	 */
-	void insertProbe(int id, IFrame frame);
+	void insertProbe(int id);
 }

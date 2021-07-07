@@ -79,10 +79,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	 * @param id
 	 *            the position to increment
 	 */
-	public void insertProbe(final int id, final IFrame frame) {
-		// Snapshot the current stackmap
-		frame.accept(mv);
-
+	public void insertProbe(final int id) {
 		// Retrieve the int[] containing coverage information
 		mv.visitVarInsn(Opcodes.ALOAD, variable);
 
@@ -148,9 +145,6 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 		// Add label to jump to.
 		mv.visitLabel(label);
-
-		// Stackmap should be the same as before we inserted the probe
-		frame.accept(mv);
 	}
 
 	@Override
@@ -241,7 +235,8 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		mv.visitFrame(type, newIdx, newLocal, nStack, stack);
 	}
 
-	// From https://github.com/gmu-swe/crochet/blob/2096d5d1ea7ca0ddd4b1ff7a2b679f5e6911387a/src/main/java/net/jonbell/crij/instrument/StackElementCapturingMV.java#L57
+	// From
+	// https://github.com/gmu-swe/crochet/blob/2096d5d1ea7ca0ddd4b1ff7a2b679f5e6911387a/src/main/java/net/jonbell/crij/instrument/StackElementCapturingMV.java#L57
 	private static Object[] removeLongsDoubleTopVal(List<Object> in) {
 		ArrayList<Object> ret = new ArrayList<Object>();
 		boolean lastWas2Word = false;

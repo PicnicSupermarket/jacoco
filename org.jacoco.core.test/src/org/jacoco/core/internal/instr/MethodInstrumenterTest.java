@@ -44,7 +44,7 @@ public class MethodInstrumenterTest {
 		expectedVisitor = expected.getVisitor();
 		final IProbeInserter probeInserter = new IProbeInserter() {
 
-			public void insertProbe(int id, IFrame frame) {
+			public void insertProbe(int id) {
 				actual.getVisitor().visitLdcInsn("Probe " + id);
 			}
 		};

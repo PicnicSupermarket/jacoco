@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.AnalyzerAdapter;
 
 /**
  * Unit tests for {@link MethodInstrumenter}.

@@ -14,7 +14,6 @@ package org.jacoco.core.internal.instr;
 
 import static org.junit.Assert.assertEquals;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ICMPEQ;
 import org.jacoco.core.instr.MethodRecorder;
 import org.junit.After;
 import org.junit.Before;
@@ -72,7 +71,8 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
+				"min", "(II)I", false);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -89,7 +89,8 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
+				"min", "(II)I", false);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -106,7 +107,8 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
+				"min", "(II)I", false);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -123,7 +125,8 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_1);
 		expectedVisitor.visitInsn(Opcodes.IADD);
 		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
+				"min", "(II)I", false);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 
 	}

@@ -12,12 +12,7 @@
  *******************************************************************************/
 package org.jacoco.core.internal.instr;
 
-import org.jacoco.core.internal.flow.IFrame;
 import org.objectweb.asm.*;
-import org.objectweb.asm.commons.AnalyzerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Internal utility to add probes into the control flow of a method. The code
@@ -125,12 +120,14 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[1]: I
 		// Stack[0]: [I
 		// Invoke Math.min
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min",
+				"(II)I", false);
 
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Store the incremented value in the integer array at the index which we
+		// Store the incremented value in the integer array at the index which
+		// we
 		// already had on the stack
 		mv.visitInsn(Opcodes.IASTORE);
 	}
@@ -221,24 +218,6 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 			}
 		}
 		mv.visitFrame(type, newIdx, newLocal, nStack, stack);
-	}
-
-	// From
-	// https://github.com/gmu-swe/crochet/blob/2096d5d1ea7ca0ddd4b1ff7a2b679f5e6911387a/src/main/java/net/jonbell/crij/instrument/StackElementCapturingMV.java#L57
-	private static Object[] removeLongsDoubleTopVal(List<Object> in) {
-		ArrayList<Object> ret = new ArrayList<Object>();
-		boolean lastWas2Word = false;
-		for (Object n : in) {
-			if ((n == Opcodes.TOP) && lastWas2Word) {
-				// nop
-			} else
-				ret.add(n);
-			if (n == Opcodes.DOUBLE || n == Opcodes.LONG)
-				lastWas2Word = true;
-			else
-				lastWas2Word = false;
-		}
-		return ret.toArray();
 	}
 
 }

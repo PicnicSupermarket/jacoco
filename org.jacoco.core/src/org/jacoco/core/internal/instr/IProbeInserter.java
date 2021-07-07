@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.jacoco.core.internal.instr;
 
-import org.jacoco.core.internal.flow.IFrame;
-import org.objectweb.asm.commons.AnalyzerAdapter;
-
 /**
  * Internal interface for insertion of probes into in the instruction sequence
  * of a method.
@@ -28,4 +25,5 @@ interface IProbeInserter {
 	 *            id of the probe to insert
 	 */
 	void insertProbe(int id);
+
 }

@@ -15,7 +15,6 @@ package org.jacoco.core.internal.flow;
 import org.jacoco.core.internal.instr.InstrSupport;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.MethodNode;
 
 /**

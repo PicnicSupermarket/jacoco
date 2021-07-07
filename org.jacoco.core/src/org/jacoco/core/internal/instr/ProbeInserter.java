@@ -89,62 +89,50 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Retrieve the value from the array
-		mv.visitInsn(Opcodes.IALOAD);
-
-		// Stack[0]: I
-		// Load the max integer value on the stack
-		mv.visitLdcInsn(Integer.MAX_VALUE);
-
-		// Stack[1]: I
-		// Stack[0]: I
-		// If ints are equal, jump (skips incrementing value).
-		final Label label = new Label();
-		mv.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
-
-		// Retrieve the int[] containing coverage information
-		mv.visitVarInsn(Opcodes.ALOAD, variable);
-
-		// Stack[0]: [I
-		// Pushes the index of the array we want to retrieve on the stack
-		InstrSupport.push(mv, id);
-
-		// Stack[1]: I
-		// Stack[0]: [I
-		// Duplicate the top two stack items as we want to do both lookup and
-		// storage.
+		// Duplicate the stack as we want to read and write to the array
+		// with the index.
 		mv.visitInsn(Opcodes.DUP2);
 
 		// Stack[3]: I
 		// Stack[2]: [I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Lookup a value from an integer array
+		// Retrieve the value from the array
 		mv.visitInsn(Opcodes.IALOAD);
 
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Add an integer with value 1 on the stack (the value we will increment
-		// with)
+		// Push 1 to the stack
 		mv.visitInsn(Opcodes.ICONST_1);
 
 		// Stack[3]: I
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Add the value from the array and the integer with value 1
+		// Increment the integer on the stack
 		mv.visitInsn(Opcodes.IADD);
 
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Store the summed value in the integer array at the index which we
+		// Load the max integer value - 1 on the stack. We don't use max integer
+		// as Math.min with incremented max int would be negative.
+		mv.visitLdcInsn(0x7ffffffe);
+
+		// Stack[3]: I
+		// Stack[2]: I
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Invoke Math.min
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min", "(I;I)I;", false);
+
+		// Stack[2]: I
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Store the incremented value in the integer array at the index which we
 		// already had on the stack
 		mv.visitInsn(Opcodes.IASTORE);
-
-		// Add label to jump to.
-		mv.visitLabel(label);
 	}
 
 	@Override

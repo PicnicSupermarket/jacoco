@@ -173,10 +173,15 @@ public class Instruction {
 			if (result.coveredBranches.containsKey(entry.getKey())) {
 				// We have already covered the branch before so we need
 				// to add the two instructions together.
-				result.coveredBranches.put(entry.getKey(),
-						// TODO: Do integer cap
-						result.coveredBranches.get(entry.getKey())
-								+ entry.getValue());
+				int sum = entry.getKey() + entry.getValue();
+				if (sum == Integer.MAX_VALUE || sum < 0) {
+					// Prevent integer overflow by capping at MAX_VALUE - 1
+					// Note, we can not allow MAX_VALUE itself either because
+					// that would result in the Math.min implementation of the
+					// probe to overflow on increment.
+					sum = Integer.MAX_VALUE - 1;
+				}
+				result.coveredBranches.put(entry.getKey(), sum);
 			} else {
 				// The branch was not covered before, so we can just set it
 				// to the value of the other instruction.
@@ -252,10 +257,17 @@ public class Instruction {
 	}
 
 	private int getListSum(Collection<Integer> list) {
-		// TODO: Do integer cap
 		int sum = 0;
 		for (int value : list) {
-			sum += value;
+			int nextSum = sum + value;
+			if (nextSum == Integer.MAX_VALUE || nextSum < 0) {
+				// Prevent integer overflow by capping at MAX_VALUE - 1
+				// Note, we can not allow MAX_VALUE itself either because
+				// that would result in the Math.min implementation of the
+				// probe to overflow on increment.
+				return Integer.MAX_VALUE - 1;
+			}
+			sum = nextSum;
 		}
 		return sum;
 	}

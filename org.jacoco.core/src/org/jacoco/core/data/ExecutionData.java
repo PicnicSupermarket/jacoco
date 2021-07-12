@@ -162,9 +162,16 @@ public final class ExecutionData {
 		for (int i = 0; i < probes.length; i++) {
 			int otherProbe = otherData[i];
 			if (otherProbe > 0) {
-				// TODO: Do integer cap
 				if (flag) {
-					probes[i] += otherProbe;
+					int sum = probes[i] + otherProbe;
+					if (sum == Integer.MAX_VALUE || sum < 0) {
+						// Prevent integer overflow by capping at MAX_VALUE - 1
+						// Note, we can not allow MAX_VALUE itself either because
+						// that would result in the Math.min implementation of the
+						// probe to overflow on increment.
+						sum = Integer.MAX_VALUE - 1;
+					}
+					probes[i] = sum;
 				} else {
 					probes[i] = Math.max(probes[i] - otherProbe, 0);
 				}

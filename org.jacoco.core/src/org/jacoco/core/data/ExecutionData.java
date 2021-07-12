@@ -18,8 +18,8 @@ import java.util.Arrays;
 
 /**
  * Execution data for a single Java class. While instances are immutable care
- * has to be taken about the probe data array of type <code>boolean[]</code>
- * which can be modified.
+ * has to be taken about the probe data array of type <code>int[]</code> which
+ * can be modified.
  */
 public final class ExecutionData {
 
@@ -166,8 +166,10 @@ public final class ExecutionData {
 					int sum = probes[i] + otherProbe;
 					if (sum == Integer.MAX_VALUE || sum < 0) {
 						// Prevent integer overflow by capping at MAX_VALUE - 1
-						// Note, we can not allow MAX_VALUE itself either because
-						// that would result in the Math.min implementation of the
+						// Note, we can not allow MAX_VALUE itself either
+						// because
+						// that would result in the Math.min implementation of
+						// the
 						// probe to overflow on increment.
 						sum = Integer.MAX_VALUE - 1;
 					}

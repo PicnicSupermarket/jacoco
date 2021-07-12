@@ -16,7 +16,7 @@ import org.objectweb.asm.MethodVisitor;
 
 /**
  * The instrumented classes need a piece of code that obtains a
- * <code>boolean[]</code> instance from the runtime. The mechanism is runtime
+ * <code>int[]</code> instance from the runtime. The mechanism is runtime
  * specific and therefore abstracted by this interface. Implementations are
  * provided by {@link IRuntime} implementations and are used by the
  * instrumentation process.

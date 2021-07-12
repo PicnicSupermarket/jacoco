@@ -136,7 +136,7 @@ public class RuntimeData {
 	 * Return value:
 	 *
 	 * <ul>
-	 * <li>args[0]: probe array (<code>boolean[]</code>)
+	 * <li>args[0]: probe array (<code>int[]</code>)
 	 * </ul>
 	 *
 	 * @param args

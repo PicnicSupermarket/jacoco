@@ -38,8 +38,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
-
 /**
  * Several APIs to instrument Java class definitions for coverage tracing.
  */

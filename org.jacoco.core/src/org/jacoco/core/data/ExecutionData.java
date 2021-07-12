@@ -162,6 +162,7 @@ public final class ExecutionData {
 		for (int i = 0; i < probes.length; i++) {
 			int otherProbe = otherData[i];
 			if (otherProbe > 0) {
+				// TODO: Do integer cap
 				if (flag) {
 					probes[i] += otherProbe;
 				} else {

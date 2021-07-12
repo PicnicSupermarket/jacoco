@@ -174,6 +174,7 @@ public class Instruction {
 				// We have already covered the branch before so we need
 				// to add the two instructions together.
 				result.coveredBranches.put(entry.getKey(),
+						// TODO: Do integer cap
 						result.coveredBranches.get(entry.getKey())
 								+ entry.getValue());
 			} else {
@@ -251,6 +252,7 @@ public class Instruction {
 	}
 
 	private int getListSum(Collection<Integer> list) {
+		// TODO: Do integer cap
 		int sum = 0;
 		for (int value : list) {
 			sum += value;

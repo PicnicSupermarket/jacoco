@@ -173,7 +173,8 @@ public class Instruction {
 			if (result.coveredBranches.containsKey(entry.getKey())) {
 				// We have already covered the branch before so we need
 				// to add the two instructions together.
-				int sum = entry.getKey() + entry.getValue();
+				int sum = result.coveredBranches.get(entry.getKey())
+						+ entry.getValue();
 				if (sum == Integer.MAX_VALUE || sum < 0) {
 					// Prevent integer overflow by capping at MAX_VALUE - 1
 					// Note, we can not allow MAX_VALUE itself either because

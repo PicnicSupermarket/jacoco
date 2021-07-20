@@ -83,7 +83,7 @@ public final class ExecutionData {
 	}
 
 	/**
-	 * Returns the execution data probes. A value greater of <code>0</code>
+	 * Returns the execution data probes. A value greater than <code>0</code>
 	 * indicates that the corresponding probe was executed at least once.
 	 *
 	 * @return probe data
@@ -167,10 +167,8 @@ public final class ExecutionData {
 					if (sum == Integer.MAX_VALUE || sum < 0) {
 						// Prevent integer overflow by capping at MAX_VALUE - 1
 						// Note, we can not allow MAX_VALUE itself either
-						// because
-						// that would result in the Math.min implementation of
-						// the
-						// probe to overflow on increment.
+						// because that would result in the Math.min
+						// implementation of the probe to overflow on increment.
 						sum = Integer.MAX_VALUE - 1;
 					}
 					probes[i] = sum;

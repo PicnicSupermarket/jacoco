@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.jacoco.core.internal.analysis;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jacoco.core.analysis.ICounter;
 
@@ -96,7 +98,7 @@ public class Instruction {
 		target.predecessor = this;
 		target.predecessorBranch = branch;
 		if (!target.coveredBranches.isEmpty()) {
-			// As an instruction can only have one predecessor, we assume
+			// As an instruction can have only one predecessor, we assume
 			// that every execution on the target's branches is coming from
 			// the current instruction. Therefore, we must sum the target's
 			// branch executions.

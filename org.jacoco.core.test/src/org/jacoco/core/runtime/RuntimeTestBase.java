@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.jacoco.core.runtime;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.jacoco.core.internal.instr.InstrSupport;
 import org.jacoco.core.test.TargetLoader;
 import org.junit.After;
@@ -23,8 +26,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
-
-import static org.junit.Assert.*;
 
 /**
  * Abstract test base for {@link IRuntime} implementations.
@@ -79,7 +80,6 @@ public abstract class RuntimeTestBase {
 		data.collect(storage, storage, false);
 		storage.assertSize(1);
 		final int[] data = storage.getData(1001).getProbes();
-
 		assertEquals(1, data[0]);
 		assertEquals(0, data[1]);
 	}

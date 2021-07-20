@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.jacoco.core.internal.instr;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.TypePath;
 
 /**
  * Internal utility to add probes into the control flow of a method. The code
@@ -30,14 +35,10 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	 */
 	private final boolean clinit;
 
-	/**
-	 * Position of the inserted variable.
-	 */
+	/** Position of the inserted variable. */
 	private final int variable;
 
-	/**
-	 * Maximum stack usage of the code to access the probe array.
-	 */
+	/** Maximum stack usage of the code to access the probe array. */
 	private int accessorStackSize;
 
 	/**
@@ -68,8 +69,8 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	}
 
 	/**
-	 * Insert bytecode (a probe) to increment the position corresponding to the
-	 * given {@code id} in the int[] array
+	 * Inserts bytecode (a probe) to increment the position corresponding to the
+	 * given {@code id} in the int[] array.
 	 *
 	 * @param id
 	 *            the position to increment
@@ -79,7 +80,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		mv.visitVarInsn(Opcodes.ALOAD, variable);
 
 		// Stack[0]: [I
-		// Pushes the index of the array we want to retrieve on the stack
+		// Push the index of the array we want to retrieve onto the stack.
 		InstrSupport.push(mv, id);
 
 		// Stack[1]: I
@@ -92,20 +93,20 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[2]: [I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Retrieve the value from the array
+		// Retrieve the value from the array.
 		mv.visitInsn(Opcodes.IALOAD);
 
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Push 1 to the stack
+		// Push 1 onto the stack.
 		mv.visitInsn(Opcodes.ICONST_1);
 
 		// Stack[3]: I
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Increment the integer on the stack
+		// Increment the integer on the stack.
 		mv.visitInsn(Opcodes.IADD);
 
 		// Stack[2]: I
@@ -119,7 +120,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Invoke Math.min
+		// Invoke Math.min.
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min",
 				"(II)I", false);
 
@@ -127,8 +128,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[1]: I
 		// Stack[0]: [I
 		// Store the incremented value in the integer array at the index which
-		// we
-		// already had on the stack
+		// we already had on the stack
 		mv.visitInsn(Opcodes.IASTORE);
 	}
 

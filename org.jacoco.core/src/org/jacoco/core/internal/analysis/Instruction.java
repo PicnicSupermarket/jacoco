@@ -13,9 +13,10 @@
 package org.jacoco.core.internal.analysis;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntCollection;
 import org.jacoco.core.analysis.ICounter;
 
 /**
@@ -60,7 +61,7 @@ public class Instruction {
 
 	private int branches;
 
-	private final Map<Integer, Integer> coveredBranches;
+	private final Int2IntArrayMap coveredBranches;
 
 	private Instruction predecessor;
 
@@ -75,7 +76,7 @@ public class Instruction {
 	public Instruction(final int line) {
 		this.line = line;
 		this.branches = 0;
-		this.coveredBranches = new HashMap<Integer, Integer>();
+		this.coveredBranches = new Int2IntArrayMap();
 	}
 
 	/**
@@ -137,9 +138,8 @@ public class Instruction {
 				// set it to the max of the value that we already have or the
 				// value that is coming in from upstream. Otherwise, we will
 				// count more executions than actually happened.
-				Integer existing = insn.coveredBranches.get(branch);
-				insn.coveredBranches.put(branch,
-						existing == null ? count : Math.max(existing, count));
+				int existing = insn.coveredBranches.get(branch);
+				insn.coveredBranches.put(branch, Math.max(existing, count));
 				break;
 			}
 			insn.coveredBranches.put(branch, count);
@@ -170,13 +170,12 @@ public class Instruction {
 		result.branches = this.branches;
 		result.coveredBranches.putAll(this.coveredBranches);
 
-		for (Map.Entry<Integer, Integer> entry : other.coveredBranches
-				.entrySet()) {
-			if (result.coveredBranches.containsKey(entry.getKey())) {
+		for (Int2IntMap.Entry entry : other.coveredBranches.int2IntEntrySet()) {
+			if (result.coveredBranches.containsKey(entry.getIntKey())) {
 				// We have already covered the branch before so we need
 				// to add the two instructions together.
-				int sum = result.coveredBranches.get(entry.getKey())
-						+ entry.getValue();
+				int sum = result.coveredBranches.get(entry.getIntKey())
+						+ entry.getIntValue();
 				if (sum == Integer.MAX_VALUE || sum < 0) {
 					// Prevent integer overflow by capping at MAX_VALUE - 1
 					// Note, we can not allow MAX_VALUE itself either because
@@ -184,11 +183,12 @@ public class Instruction {
 					// probe to overflow on increment.
 					sum = Integer.MAX_VALUE - 1;
 				}
-				result.coveredBranches.put(entry.getKey(), sum);
+				result.coveredBranches.put(entry.getIntKey(), sum);
 			} else {
 				// The branch was not covered before, so we can just set it
 				// to the value of the other instruction.
-				result.coveredBranches.put(entry.getKey(), entry.getValue());
+				result.coveredBranches.put(entry.getIntKey(),
+						entry.getIntValue());
 			}
 		}
 
@@ -259,7 +259,7 @@ public class Instruction {
 				: getListSum(coveredBranches.values());
 	}
 
-	private int getListSum(Collection<Integer> list) {
+	private int getListSum(IntCollection list) {
 		int sum = 0;
 		for (int value : list) {
 			int nextSum = sum + value;

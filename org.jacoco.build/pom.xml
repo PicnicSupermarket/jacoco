@@ -142,6 +142,7 @@
     <asm.version>9.1</asm.version>
     <ant.version>1.9.15</ant.version>
     <args4j.version>2.0.28</args4j.version>
+    <fastutil.version>8.1.0</fastutil.version>
     <junit.version>4.13.1</junit.version>
     <googlecodeprettify.version>20100721</googlecodeprettify.version>
 
@@ -261,6 +262,12 @@
         <groupId>args4j</groupId>
         <artifactId>args4j</artifactId>
         <version>${args4j.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/it.unimi.dsi/fastutil -->
+      <dependency>
+        <groupId>it.unimi.dsi</groupId>
+        <artifactId>fastutil</artifactId>
+        <version>${fastutil.version}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

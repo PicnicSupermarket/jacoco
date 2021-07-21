@@ -81,8 +81,10 @@ public abstract class LineImpl implements ILine {
 		public LineImpl increment(final ICounter instructions,
 				final int executions, final ICounter branches) {
 			this.instructions = this.instructions.increment(instructions);
-			// Set the amount of execution on this line on the max between
-			// the current executions and those to increment with.
+			// Instead of incrementing the execution count, we maximize it here
+			// as we invoke this for every instrumented instruction on the line.
+			// Therefore, the line has only been executed at best as often as
+			// the most executed instruction.
 			this.executions = Math.max(executions, this.executions);
 			this.branches = this.branches.increment(branches);
 			return this;

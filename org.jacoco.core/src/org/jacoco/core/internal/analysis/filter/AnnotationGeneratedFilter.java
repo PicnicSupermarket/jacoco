@@ -48,7 +48,9 @@ public final class AnnotationGeneratedFilter implements IFilter {
 		final String name = annotation
 				.substring(Math.max(annotation.lastIndexOf('/'),
 						annotation.lastIndexOf('$')) + 1);
-		return name.contains("Generated");
+		// For our thesis, we are interested in analyzing generated classes
+		return name.contains("Generated") && !annotation.contains("processing")
+				&& !annotation.contains("immutables");
 	}
 
 	private static boolean presentIn(final List<AnnotationNode> annotations) {

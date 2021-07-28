@@ -68,11 +68,10 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
-		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.IADD);
-		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
-				"min", "(II)I", false);
+		expectedVisitor.visitInsn(Opcodes.I2D);
+		expectedVisitor.visitInsn(Opcodes.DCONST_1);
+		expectedVisitor.visitInsn(Opcodes.DADD);
+		expectedVisitor.visitInsn(Opcodes.D2I);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -86,11 +85,10 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
-		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.IADD);
-		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
-				"min", "(II)I", false);
+		expectedVisitor.visitInsn(Opcodes.I2D);
+		expectedVisitor.visitInsn(Opcodes.DCONST_1);
+		expectedVisitor.visitInsn(Opcodes.DADD);
+		expectedVisitor.visitInsn(Opcodes.D2I);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -104,11 +102,10 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
-		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.IADD);
-		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
-				"min", "(II)I", false);
+		expectedVisitor.visitInsn(Opcodes.I2D);
+		expectedVisitor.visitInsn(Opcodes.DCONST_1);
+		expectedVisitor.visitInsn(Opcodes.DADD);
+		expectedVisitor.visitInsn(Opcodes.D2I);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -122,11 +119,10 @@ public class ProbeInserterTest {
 		expectedVisitor.visitInsn(Opcodes.ICONST_0);
 		expectedVisitor.visitInsn(Opcodes.DUP2);
 		expectedVisitor.visitInsn(Opcodes.IALOAD);
-		expectedVisitor.visitInsn(Opcodes.ICONST_1);
-		expectedVisitor.visitInsn(Opcodes.IADD);
-		expectedVisitor.visitLdcInsn(Integer.MAX_VALUE - 1);
-		expectedVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math",
-				"min", "(II)I", false);
+		expectedVisitor.visitInsn(Opcodes.I2D);
+		expectedVisitor.visitInsn(Opcodes.DCONST_1);
+		expectedVisitor.visitInsn(Opcodes.DADD);
+		expectedVisitor.visitInsn(Opcodes.D2I);
 		expectedVisitor.visitInsn(Opcodes.IASTORE);
 
 	}
@@ -241,7 +237,7 @@ public class ProbeInserterTest {
 		pi.visitMaxs(0, 8);
 
 		expectedVisitor.visitLdcInsn("init");
-		expectedVisitor.visitMaxs(5, 9);
+		expectedVisitor.visitMaxs(6, 9);
 	}
 
 	@Test
@@ -252,7 +248,7 @@ public class ProbeInserterTest {
 		pi.visitMaxs(10, 8);
 
 		expectedVisitor.visitLdcInsn("init");
-		expectedVisitor.visitMaxs(14, 9);
+		expectedVisitor.visitMaxs(16, 9);
 	}
 
 	@Test

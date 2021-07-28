@@ -174,15 +174,8 @@ public class Instruction {
 			if (result.coveredBranches.containsKey(entry.getIntKey())) {
 				// We have already covered the branch before so we need
 				// to add the two instructions together.
-				int sum = result.coveredBranches.get(entry.getIntKey())
-						+ entry.getIntValue();
-				if (sum == Integer.MAX_VALUE || sum < 0) {
-					// Prevent integer overflow by capping at MAX_VALUE - 1
-					// Note, we can not allow MAX_VALUE itself either because
-					// that would result in the Math.min implementation of the
-					// probe to overflow on increment.
-					sum = Integer.MAX_VALUE - 1;
-				}
+				int sum = (int) (result.coveredBranches.get(entry.getIntKey())
+						+ (double) entry.getIntValue());
 				result.coveredBranches.put(entry.getIntKey(), sum);
 			} else {
 				// The branch was not covered before, so we can just set it
@@ -260,18 +253,10 @@ public class Instruction {
 	}
 
 	private int getListSum(IntCollection list) {
-		int sum = 0;
+		double sum = 0;
 		for (int value : list) {
-			int nextSum = sum + value;
-			if (nextSum == Integer.MAX_VALUE || nextSum < 0) {
-				// Prevent integer overflow by capping at MAX_VALUE - 1
-				// Note, we can not allow MAX_VALUE itself either because
-				// that would result in the Math.min implementation of the
-				// probe to overflow on increment.
-				return Integer.MAX_VALUE - 1;
-			}
-			sum = nextSum;
+			sum += value;
 		}
-		return sum;
+		return (int) sum;
 	}
 }

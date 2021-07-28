@@ -85,8 +85,8 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Duplicate the stack as we want to read and write to the array
-		// with the index.
+		// Duplicate the top two stack items as we want to read and write to the
+	    // value in the array at the index.
 		mv.visitInsn(Opcodes.DUP2);
 
 		// Stack[3]: I
@@ -99,36 +99,34 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Push 1 onto the stack.
-		mv.visitInsn(Opcodes.ICONST_1);
+		// Convert integer value to double.
+		mv.visitInsn(Opcodes.I2D);
 
-		// Stack[3]: I
-		// Stack[2]: I
+		// Stack[2]: D
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Push double 1 onto the stack.
+		mv.visitInsn(Opcodes.DCONST_1);
+
+		// Stack[3]: D
+		// Stack[2]: D
 		// Stack[1]: I
 		// Stack[0]: [I
 		// Increment the integer on the stack.
-		mv.visitInsn(Opcodes.IADD);
+		mv.visitInsn(Opcodes.DADD);
 
-		// Stack[2]: I
+		// Stack[2]: D
 		// Stack[1]: I
 		// Stack[0]: [I
-		// Load the max integer value - 1 on the stack. We don't use max integer
-		// as Math.min with incremented max int would be negative.
-		mv.visitLdcInsn(0x7ffffffe);
-
-		// Stack[3]: I
-		// Stack[2]: I
-		// Stack[1]: I
-		// Stack[0]: [I
-		// Invoke Math.min.
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "min",
-				"(II)I", false);
+		// Convert the double to int.
+		// This converts values greater than max-int to max-int.
+		mv.visitInsn(Opcodes.D2I);
 
 		// Stack[2]: I
 		// Stack[1]: I
 		// Stack[0]: [I
 		// Store the incremented value in the integer array at the index which
-		// we already had on the stack
+		// we already had on the stack.
 		mv.visitInsn(Opcodes.IASTORE);
 	}
 
@@ -169,11 +167,11 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 	@Override
 	public void visitMaxs(final int maxStack, final int maxLocals) {
-		// Max stack size of the probe code is 4 which can add to the
+		// Max stack size of the probe code is 6 which can add to the
 		// original stack size depending on the probe locations. The accessor
 		// stack size is an absolute maximum, as the accessor code is inserted
 		// at the very beginning of each method when the stack size is empty.
-		final int increasedStack = Math.max(maxStack + 4, accessorStackSize);
+		final int increasedStack = Math.max(maxStack + 6, accessorStackSize);
 		mv.visitMaxs(increasedStack, maxLocals + 1);
 	}
 

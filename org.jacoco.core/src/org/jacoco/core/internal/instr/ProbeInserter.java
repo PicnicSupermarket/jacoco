@@ -86,7 +86,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[1]: I
 		// Stack[0]: [I
 		// Duplicate the top two stack items as we want to read and write to the
-	    // value in the array at the index.
+		// value in the array at the index.
 		mv.visitInsn(Opcodes.DUP2);
 
 		// Stack[3]: I

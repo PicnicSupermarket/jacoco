@@ -86,7 +86,7 @@ public class TcpServerOutputTest {
 	@Test
 	public void testWriteExecutionData() throws Exception {
 		data.getExecutionData(Long.valueOf(0x12345678), "Foo", 42)
-				.getProbes()[0] = true;
+				.getProbes()[0] = 1;
 		data.setSessionId("stubid");
 
 		final Socket socket = serverSocket.connect();

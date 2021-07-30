@@ -75,6 +75,7 @@ class MethodCoverageCalculator implements IFilterOutput {
 			if (!ignored.contains(entry.getKey())) {
 				final Instruction instruction = entry.getValue();
 				coverage.increment(instruction.getInstructionCounter(),
+						instruction.getExecutionCount(),
 						instruction.getBranchCounter(), instruction.getLine());
 			}
 		}

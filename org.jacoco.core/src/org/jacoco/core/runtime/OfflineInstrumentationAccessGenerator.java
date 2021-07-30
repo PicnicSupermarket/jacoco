@@ -52,7 +52,7 @@ public class OfflineInstrumentationAccessGenerator
 		mv.visitLdcInsn(classname);
 		InstrSupport.push(mv, probecount);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, runtimeClassName, "getProbes",
-				"(JLjava/lang/String;I)[Z", false);
+				"(JLjava/lang/String;I)[I", false);
 		return 4;
 	}
 

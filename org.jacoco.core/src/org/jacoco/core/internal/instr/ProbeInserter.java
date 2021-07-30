@@ -21,9 +21,9 @@ import org.objectweb.asm.TypePath;
 
 /**
  * Internal utility to add probes into the control flow of a method. The code
- * for a probe simply sets a certain slot of a boolean array to true. In
- * addition the probe array has to be retrieved at the beginning of the method
- * and stored in a local variable.
+ * for a probe simply increments a certain slot of the int array. In addition
+ * the probe array has to be retrieved at the beginning of the method and stored
+ * in a local variable.
  */
 class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
@@ -68,27 +68,66 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		variable = pos;
 	}
 
+	/**
+	 * Inserts bytecode (a probe) to increment the position corresponding to the
+	 * given {@code id} in the int[] array.
+	 *
+	 * @param id
+	 *            the position to increment
+	 */
 	public void insertProbe(final int id) {
-
-		// For a probe we set the corresponding position in the boolean[] array
-		// to true.
-
+		// Retrieve the int[] containing coverage information
 		mv.visitVarInsn(Opcodes.ALOAD, variable);
 
-		// Stack[0]: [Z
-
+		// Stack[0]: [I
+		// Push the index of the array we want to retrieve onto the stack.
 		InstrSupport.push(mv, id);
 
 		// Stack[1]: I
-		// Stack[0]: [Z
+		// Stack[0]: [I
+		// Duplicate the top two stack items as we want to read and write to the
+		// value in the array at the index.
+		mv.visitInsn(Opcodes.DUP2);
 
-		mv.visitInsn(Opcodes.ICONST_1);
+		// Stack[3]: I
+		// Stack[2]: [I
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Retrieve the value from the array.
+		mv.visitInsn(Opcodes.IALOAD);
 
 		// Stack[2]: I
 		// Stack[1]: I
-		// Stack[0]: [Z
+		// Stack[0]: [I
+		// Convert integer value to double.
+		mv.visitInsn(Opcodes.I2D);
 
-		mv.visitInsn(Opcodes.BASTORE);
+		// Stack[2]: D
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Push double 1 onto the stack.
+		mv.visitInsn(Opcodes.DCONST_1);
+
+		// Stack[3]: D
+		// Stack[2]: D
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Increment the integer on the stack.
+		mv.visitInsn(Opcodes.DADD);
+
+		// Stack[2]: D
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Convert the double to int.
+		// This converts values greater than max-int to max-int.
+		mv.visitInsn(Opcodes.D2I);
+
+		// Stack[2]: I
+		// Stack[1]: I
+		// Stack[0]: [I
+		// Store the incremented value in the integer array at the index which
+		// we already had on the stack.
+		mv.visitInsn(Opcodes.IASTORE);
 	}
 
 	@Override
@@ -128,11 +167,11 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 
 	@Override
 	public void visitMaxs(final int maxStack, final int maxLocals) {
-		// Max stack size of the probe code is 3 which can add to the
+		// Max stack size of the probe code is 6 which can add to the
 		// original stack size depending on the probe locations. The accessor
 		// stack size is an absolute maximum, as the accessor code is inserted
 		// at the very beginning of each method when the stack size is empty.
-		final int increasedStack = Math.max(maxStack + 3, accessorStackSize);
+		final int increasedStack = Math.max(maxStack + 6, accessorStackSize);
 		mv.visitMaxs(increasedStack, maxLocals + 1);
 	}
 

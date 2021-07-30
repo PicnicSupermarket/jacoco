@@ -95,7 +95,7 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 			for (int i = firstLine; i <= lastLine; i++) {
 				final ILine line = child.getLine(i);
 				incrementLine(line.getInstructionCounter(),
-						line.getBranchCounter(), i);
+						line.getExecutionCount(), line.getBranchCounter(), i);
 			}
 		}
 	}
@@ -107,27 +107,30 @@ public class SourceNodeImpl extends CoverageNodeImpl implements ISourceNode {
 	 *
 	 * @param instructions
 	 *            instructions to add
+	 * @param executions
+	 *            executions to add
 	 * @param branches
 	 *            branches to add
 	 * @param line
 	 *            optional line number or {@link ISourceNode#UNKNOWN_LINE}
 	 */
-	public void increment(final ICounter instructions, final ICounter branches,
-			final int line) {
+	public void increment(final ICounter instructions, final int executions,
+			final ICounter branches, final int line) {
 		if (line != UNKNOWN_LINE) {
-			incrementLine(instructions, branches, line);
+			incrementLine(instructions, executions, branches, line);
 		}
+
 		instructionCounter = instructionCounter.increment(instructions);
 		branchCounter = branchCounter.increment(branches);
 	}
 
 	private void incrementLine(final ICounter instructions,
-			final ICounter branches, final int line) {
+			final int executions, final ICounter branches, final int line) {
 		ensureCapacity(line, line);
 		final LineImpl l = getLine(line);
 		final int oldTotal = l.getInstructionCounter().getTotalCount();
 		final int oldCovered = l.getInstructionCounter().getCoveredCount();
-		lines[line - offset] = l.increment(instructions, branches);
+		lines[line - offset] = l.increment(instructions, executions, branches);
 
 		// Increment line counter:
 		if (instructions.getTotalCount() > 0) {

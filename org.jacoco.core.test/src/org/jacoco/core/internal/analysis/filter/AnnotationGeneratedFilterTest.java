@@ -53,7 +53,7 @@ public class AnnotationGeneratedFilterTest extends FilterTestBase {
 	}
 
 	@Test
-	public void should_filter_classes_annotated_with_runtime_visible_org_immutables_value_Generated() {
+	public void should_not_filter_classes_annotated_with_runtime_visible_org_immutables_value_Generated() {
 		final MethodNode m = new MethodNode(InstrSupport.ASM_API_VERSION, 0,
 				"hashCode", "()I", null, null);
 
@@ -64,7 +64,22 @@ public class AnnotationGeneratedFilterTest extends FilterTestBase {
 
 		filter.filter(m, context, output);
 
-		assertMethodIgnored(m);
+		assertIgnored();
+	}
+
+	@Test
+	public void should_not_filter_classes_annotated_with_runtime_visible_javax_annotation_processing_Generated() {
+		final MethodNode m = new MethodNode(InstrSupport.ASM_API_VERSION, 0,
+				"hashCode", "()I", null, null);
+
+		m.visitInsn(Opcodes.ICONST_0);
+		m.visitInsn(Opcodes.IRETURN);
+
+		context.classAnnotations.add("Ljavax/annotation/processing/Generated;");
+
+		filter.filter(m, context, output);
+
+		assertIgnored();
 	}
 
 	@Test

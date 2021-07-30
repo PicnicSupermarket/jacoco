@@ -12,9 +12,11 @@
  *******************************************************************************/
 package org.jacoco.core.internal.analysis;
 
-import java.util.BitSet;
 import java.util.Collection;
 
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntCollection;
 import org.jacoco.core.analysis.ICounter;
 
 /**
@@ -28,15 +30,15 @@ import org.jacoco.core.analysis.ICounter;
  *
  * For each bytecode instruction of a method a {@link Instruction} instance is
  * created. In correspondence with the CFG these instances are linked with each
- * other with the <code>addBranch()</code> methods. The executions status is
+ * other with the <code>addBranch()</code> methods. The executions count is
  * either directly derived from a probe which has been inserted in the execution
- * flow ({@link #addBranch(boolean, int)}) or indirectly propagated along the
- * CFG edges ({@link #addBranch(Instruction, int)}).
+ * flow ({@link #addBranch(int, int)}) or indirectly propagated along the CFG
+ * edges ({@link #addBranch(Instruction, int)}).
  *
  * <h2>Step 2: Querying the Coverage Status</h2>
  *
  * After all instructions have been created and linked each instruction knows
- * its execution status and can be queried with:
+ * its execution count and can be queried with:
  *
  * <ul>
  * <li>{@link #getLine()}</li>
@@ -59,7 +61,7 @@ public class Instruction {
 
 	private int branches;
 
-	private final BitSet coveredBranches;
+	private final Int2IntArrayMap coveredBranches;
 
 	private Instruction predecessor;
 
@@ -74,14 +76,15 @@ public class Instruction {
 	public Instruction(final int line) {
 		this.line = line;
 		this.branches = 0;
-		this.coveredBranches = new BitSet();
+		this.coveredBranches = new Int2IntArrayMap();
 	}
 
 	/**
 	 * Adds a branch to this instruction which execution status is indirectly
 	 * derived from the execution status of the target instruction. In case the
 	 * branch is covered the status is propagated also to the predecessors of
-	 * this instruction.
+	 * this instruction. For this, we take the sum of the target branches'
+	 * execution count.
 	 *
 	 * Note: This method is not idempotent and must be called exactly once for
 	 * every branch.
@@ -96,7 +99,12 @@ public class Instruction {
 		target.predecessor = this;
 		target.predecessorBranch = branch;
 		if (!target.coveredBranches.isEmpty()) {
-			propagateExecutedBranch(this, branch);
+			// As an instruction can have only one predecessor, we assume
+			// that every execution on the target's branches is coming from
+			// the current instruction. Therefore, we must sum the target's
+			// branch executions.
+			propagateExecutedBranch(this, branch,
+					getListSum(target.coveredBranches.values()));
 		}
 	}
 
@@ -108,26 +116,33 @@ public class Instruction {
 	 * Note: This method is not idempotent and must be called exactly once for
 	 * every branch.
 	 *
-	 * @param executed
-	 *            whether the corresponding probe has been executed
+	 * @param executionCount
+	 *            how often the corresponding probe has been executed
 	 * @param branch
 	 *            branch identifier unique for this instruction
 	 */
-	public void addBranch(final boolean executed, final int branch) {
+	public void addBranch(final int executionCount, final int branch) {
 		branches++;
-		if (executed) {
-			propagateExecutedBranch(this, branch);
+		if (executionCount > 0) {
+			propagateExecutedBranch(this, branch, executionCount);
 		}
 	}
 
-	private static void propagateExecutedBranch(Instruction insn, int branch) {
+	private static void propagateExecutedBranch(Instruction insn, int branch,
+			int count) {
 		// No recursion here, as there can be very long chains of instructions
 		while (insn != null) {
 			if (!insn.coveredBranches.isEmpty()) {
-				insn.coveredBranches.set(branch);
+				// As propagation happens multiple times in the chain, we can
+				// not just increment the execution count. Instead, we need to
+				// set it to the max of the value that we already have or the
+				// value that is coming in from upstream. Otherwise, we will
+				// count more executions than actually happened.
+				int existing = insn.coveredBranches.get(branch);
+				insn.coveredBranches.put(branch, Math.max(existing, count));
 				break;
 			}
-			insn.coveredBranches.set(branch);
+			insn.coveredBranches.put(branch, count);
 			branch = insn.predecessorBranch;
 			insn = insn.predecessor;
 		}
@@ -153,8 +168,23 @@ public class Instruction {
 	public Instruction merge(final Instruction other) {
 		final Instruction result = new Instruction(this.line);
 		result.branches = this.branches;
-		result.coveredBranches.or(this.coveredBranches);
-		result.coveredBranches.or(other.coveredBranches);
+		result.coveredBranches.putAll(this.coveredBranches);
+
+		for (Int2IntMap.Entry entry : other.coveredBranches.int2IntEntrySet()) {
+			if (result.coveredBranches.containsKey(entry.getIntKey())) {
+				// We have already covered the branch before so we need
+				// to add the two instructions together.
+				int sum = (int) (result.coveredBranches.get(entry.getIntKey())
+						+ (double) entry.getIntValue());
+				result.coveredBranches.put(entry.getIntKey(), sum);
+			} else {
+				// The branch was not covered before, so we can just set it
+				// to the value of the other instruction.
+				result.coveredBranches.put(entry.getIntKey(),
+						entry.getIntValue());
+			}
+		}
+
 		return result;
 	}
 
@@ -174,7 +204,13 @@ public class Instruction {
 		int idx = 0;
 		for (final Instruction b : newBranches) {
 			if (!b.coveredBranches.isEmpty()) {
-				result.coveredBranches.set(idx++);
+				// The instruction that we need to replace the branch with
+				// has been executed before. To not lose execution count
+				// data, we sum all of its execution counts on every branch
+				// and set it to the current instruction's branch that will
+				// be replaced.
+				result.coveredBranches.put(idx++,
+						getListSum(b.coveredBranches.values()));
 			}
 		}
 		return result;
@@ -201,8 +237,26 @@ public class Instruction {
 		if (branches < 2) {
 			return CounterImpl.COUNTER_0_0;
 		}
-		final int covered = coveredBranches.cardinality();
+		final int covered = coveredBranches.values().size();
 		return CounterImpl.getInstance(branches - covered, covered);
 	}
 
+	/**
+	 * Returns the count indicating how often this instruction has been
+	 * executed. The number is a max of all counts on every branch.
+	 *
+	 * @return the instruction execution count
+	 */
+	public int getExecutionCount() {
+		return coveredBranches.isEmpty() ? 0
+				: getListSum(coveredBranches.values());
+	}
+
+	private int getListSum(IntCollection list) {
+		double sum = 0;
+		for (int value : list) {
+			sum += value;
+		}
+		return (int) sum;
+	}
 }

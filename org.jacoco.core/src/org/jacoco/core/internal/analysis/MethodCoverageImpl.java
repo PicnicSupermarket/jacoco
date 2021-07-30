@@ -43,9 +43,9 @@ public class MethodCoverageImpl extends SourceNodeImpl
 	}
 
 	@Override
-	public void increment(final ICounter instructions, final ICounter branches,
-			final int line) {
-		super.increment(instructions, branches, line);
+	public void increment(final ICounter instructions, final int executions,
+			final ICounter branches, final int line) {
+		super.increment(instructions, executions, branches, line);
 		// Additionally increment complexity counter:
 		if (branches.getTotalCount() > 1) {
 			final int c = Math.max(0, branches.getCoveredCount() - 1);

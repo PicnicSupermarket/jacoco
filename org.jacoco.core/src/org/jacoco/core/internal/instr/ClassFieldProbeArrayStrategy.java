@@ -80,19 +80,19 @@ class ClassFieldProbeArrayStrategy implements IProbeArrayStrategy {
 				InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
 		mv.visitInsn(Opcodes.DUP);
 
-		// Stack[1]: [Z
-		// Stack[0]: [Z
+		// Stack[1]: [I
+		// Stack[0]: [I
 
 		// Skip initialization when we already have a data array:
 		final Label alreadyInitialized = new Label();
 		mv.visitJumpInsn(Opcodes.IFNONNULL, alreadyInitialized);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		mv.visitInsn(Opcodes.POP);
 		final int size = genInitializeDataField(mv, probeCount);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		// Return the class' probe array:
 		if (withFrames) {
@@ -110,7 +110,7 @@ class ClassFieldProbeArrayStrategy implements IProbeArrayStrategy {
 	 * Generates the byte code to initialize the static coverage data field
 	 * within this class.
 	 *
-	 * The code will push the [Z data array on the operand stack.
+	 * The code will push the [I data array on the operand stack.
 	 *
 	 * @param mv
 	 *            generator to emit code to
@@ -120,17 +120,17 @@ class ClassFieldProbeArrayStrategy implements IProbeArrayStrategy {
 		final int size = accessorGenerator.generateDataAccessor(classId,
 				className, probeCount, mv);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		mv.visitInsn(Opcodes.DUP);
 
-		// Stack[1]: [Z
-		// Stack[0]: [Z
+		// Stack[1]: [I
+		// Stack[0]: [I
 
 		mv.visitFieldInsn(Opcodes.PUTSTATIC, className,
 				InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
 
-		// Stack[0]: [Z
+		// Stack[0]: [I
 
 		return Math.max(size, 2); // Maximum local stack size is 2
 	}

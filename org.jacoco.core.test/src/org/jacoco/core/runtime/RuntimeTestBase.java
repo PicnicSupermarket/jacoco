@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.jacoco.core.runtime;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.jacoco.core.internal.instr.InstrSupport;
@@ -80,9 +79,9 @@ public abstract class RuntimeTestBase {
 		generateAndInstantiateClass(1001).a();
 		data.collect(storage, storage, false);
 		storage.assertSize(1);
-		final boolean[] data = storage.getData(1001).getProbes();
-		assertTrue(data[0]);
-		assertFalse(data[1]);
+		final int[] data = storage.getData(1001).getProbes();
+		assertEquals(1, data[0]);
+		assertEquals(0, data[1]);
 	}
 
 	@Test
@@ -92,9 +91,9 @@ public abstract class RuntimeTestBase {
 		generateAndInstantiateClass(1001).b();
 		data.collect(storage, storage, false);
 		storage.assertSize(1);
-		final boolean[] data = storage.getData(1001).getProbes();
-		assertTrue(data[0]);
-		assertTrue(data[1]);
+		final int[] data = storage.getData(1001).getProbes();
+		assertEquals(1, data[0]);
+		assertEquals(1, data[1]);
 	}
 
 	/**
@@ -138,8 +137,8 @@ public abstract class RuntimeTestBase {
 
 		// get()
 		gen = new GeneratorAdapter(writer.visitMethod(Opcodes.ACC_PUBLIC, "get",
-				"()[Z", null, new String[0]), Opcodes.ACC_PUBLIC, "get",
-				"()[Z");
+				"()[I", null, new String[0]), Opcodes.ACC_PUBLIC, "get",
+				"()[I");
 		gen.visitCode();
 		gen.getStatic(classType, InstrSupport.DATAFIELD_NAME,
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
@@ -155,7 +154,7 @@ public abstract class RuntimeTestBase {
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
 		gen.push(0);
 		gen.push(1);
-		gen.arrayStore(Type.BOOLEAN_TYPE);
+		gen.arrayStore(Type.INT_TYPE);
 		gen.returnValue();
 		gen.visitMaxs(3, 0);
 		gen.visitEnd();
@@ -168,7 +167,7 @@ public abstract class RuntimeTestBase {
 				Type.getObjectType(InstrSupport.DATAFIELD_DESC));
 		gen.push(1);
 		gen.push(1);
-		gen.arrayStore(Type.BOOLEAN_TYPE);
+		gen.arrayStore(Type.INT_TYPE);
 		gen.returnValue();
 		gen.visitMaxs(3, 0);
 		gen.visitEnd();
@@ -192,7 +191,7 @@ public abstract class RuntimeTestBase {
 		 *
 		 * @return the probe array
 		 */
-		boolean[] get();
+		int[] get();
 
 		/**
 		 * The implementation will mark probe 0 as executed

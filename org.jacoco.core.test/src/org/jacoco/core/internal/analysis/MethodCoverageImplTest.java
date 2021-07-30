@@ -50,8 +50,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementMissedInstructions() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.getInstance(25, 0), CounterImpl.COUNTER_0_0,
-				3);
+		node.increment(CounterImpl.getInstance(25, 0), 0,
+				CounterImpl.COUNTER_0_0, 3);
 		node.incrementMethodCounter();
 		assertEquals(CounterImpl.COUNTER_1_0, node.getMethodCounter());
 		assertEquals(CounterImpl.COUNTER_1_0, node.getComplexityCounter());
@@ -60,8 +60,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementCoveredInstructions() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.getInstance(12, 13), CounterImpl.COUNTER_0_0,
-				3);
+		node.increment(CounterImpl.getInstance(12, 13), 13,
+				CounterImpl.COUNTER_0_0, 3);
 		node.incrementMethodCounter();
 		assertEquals(CounterImpl.COUNTER_0_1, node.getMethodCounter());
 		assertEquals(CounterImpl.COUNTER_0_1, node.getComplexityCounter());
@@ -70,15 +70,15 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity1() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.COUNTER_0_0, 3);
+		node.increment(CounterImpl.COUNTER_0_0, 0, CounterImpl.COUNTER_0_0, 3);
 		assertEquals(CounterImpl.COUNTER_0_0, node.getComplexityCounter());
 	}
 
 	@Test
 	public void testIncrementComplexity2() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(2, 0),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(2, 0), 3);
 		assertEquals(CounterImpl.getInstance(1, 0),
 				node.getComplexityCounter());
 	}
@@ -86,8 +86,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity3() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(1, 1),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(1, 1), 3);
 		assertEquals(CounterImpl.getInstance(1, 0),
 				node.getComplexityCounter());
 	}
@@ -95,8 +95,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity4() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(0, 2),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(0, 2), 3);
 		assertEquals(CounterImpl.getInstance(0, 1),
 				node.getComplexityCounter());
 	}
@@ -104,8 +104,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity5() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(3, 0),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(3, 0), 3);
 		assertEquals(CounterImpl.getInstance(2, 0),
 				node.getComplexityCounter());
 	}
@@ -113,8 +113,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity6() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(2, 1),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(2, 1), 3);
 		assertEquals(CounterImpl.getInstance(2, 0),
 				node.getComplexityCounter());
 	}
@@ -122,8 +122,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity7() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(1, 2),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(1, 2), 3);
 		assertEquals(CounterImpl.getInstance(1, 1),
 				node.getComplexityCounter());
 	}
@@ -131,8 +131,8 @@ public class MethodCoverageImplTest {
 	@Test
 	public void testIncrementComplexity8() {
 		MethodCoverageImpl node = new MethodCoverageImpl("sample", "()V", null);
-		node.increment(CounterImpl.COUNTER_0_0, CounterImpl.getInstance(0, 3),
-				3);
+		node.increment(CounterImpl.COUNTER_0_0, 0,
+				CounterImpl.getInstance(0, 3), 3);
 		assertEquals(CounterImpl.getInstance(0, 2),
 				node.getComplexityCounter());
 	}

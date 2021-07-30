@@ -136,7 +136,7 @@ public class RuntimeData {
 	 * Return value:
 	 *
 	 * <ul>
-	 * <li>args[0]: probe array (<code>boolean[]</code>)
+	 * <li>args[0]: probe array (<code>int[]</code>)
 	 * </ul>
 	 *
 	 * @param args
@@ -212,8 +212,8 @@ public class RuntimeData {
 	 * Generates the code that calls a {@link RuntimeData} instance through the
 	 * JRE API method {@link Object#equals(Object)}. The code pops a
 	 * {@link Object} instance from the stack and pushes the probe array of type
-	 * <code>boolean[]</code> on the operand stack. The generated code requires
-	 * a stack size of 6.
+	 * <code>int[]</code> on the operand stack. The generated code requires a
+	 * stack size of 6.
 	 *
 	 * @param classid
 	 *            class identifier
@@ -249,7 +249,7 @@ public class RuntimeData {
 		mv.visitInsn(Opcodes.ICONST_0);
 		mv.visitInsn(Opcodes.AALOAD);
 
-		// stack[0]: [Z
+		// stack[0]: [I
 
 		mv.visitTypeInsn(Opcodes.CHECKCAST, InstrSupport.DATAFIELD_DESC);
 	}

@@ -41,7 +41,7 @@ class TestStorage implements IExecutionDataVisitor, ISessionInfoVisitor {
 		return info;
 	}
 
-	public void assertData(long classId, boolean[] expected) {
+	public void assertData(long classId, int[] expected) {
 		assertSame(expected, getData(classId).getProbes());
 	}
 

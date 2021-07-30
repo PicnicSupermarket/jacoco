@@ -52,10 +52,10 @@ public class PackageSourcePageTest extends PageTestBase {
 		super.setup();
 		SourceFileCoverageImpl src1 = new SourceFileCoverageImpl("Src1.java",
 				"org/jacoco/example");
-		src1.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
+		src1.increment(CounterImpl.COUNTER_1_0, 0, CounterImpl.COUNTER_0_0, 1);
 		SourceFileCoverageImpl src2 = new SourceFileCoverageImpl("Src2.java",
 				"org/jacoco/example");
-		src2.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
+		src2.increment(CounterImpl.COUNTER_1_0, 0, CounterImpl.COUNTER_0_0, 1);
 		node = new PackageCoverageImpl("org/jacoco/example",
 				Collections.<IClassCoverage> emptyList(),
 				Arrays.<ISourceFileCoverage> asList(src1, src2));
@@ -118,7 +118,7 @@ public class PackageSourcePageTest extends PageTestBase {
 				"Empty.java", "example");
 		final SourceFileCoverageImpl nonEmptySource = new SourceFileCoverageImpl(
 				"NonEmpty.java", "example");
-		nonEmptySource.increment(CounterImpl.COUNTER_1_0,
+		nonEmptySource.increment(CounterImpl.COUNTER_1_0, 0,
 				CounterImpl.COUNTER_0_0, 1);
 		node = new PackageCoverageImpl("example",
 				Collections.<IClassCoverage> emptyList(),

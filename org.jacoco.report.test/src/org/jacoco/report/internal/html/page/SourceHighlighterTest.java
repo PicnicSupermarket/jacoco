@@ -13,6 +13,7 @@
 package org.jacoco.report.internal.html.page;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
@@ -86,16 +87,22 @@ public class SourceHighlighterTest {
 	@Test
 	public void testHighlighting() throws Exception {
 		final String src = "A\nB\nC\nD";
-		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 1);
-		source.increment(CounterImpl.COUNTER_1_0, CounterImpl.COUNTER_0_0, 2);
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 2);
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.COUNTER_0_0, 3);
+		source.increment(CounterImpl.COUNTER_1_0, 0, CounterImpl.COUNTER_0_0,
+				1);
+		source.increment(CounterImpl.COUNTER_1_0, 0, CounterImpl.COUNTER_0_0,
+				2);
+		source.increment(CounterImpl.COUNTER_0_1, 1, CounterImpl.COUNTER_0_0,
+				2);
+		source.increment(CounterImpl.COUNTER_0_1, 1, CounterImpl.COUNTER_0_0,
+				3);
 		sourceHighlighter.render(parent, source, new StringReader(src));
 		final Document doc = parseDoc();
 		assertEquals(Styles.NOT_COVERED,
 				htmlSupport.findStr(doc, "//pre/span[text() = 'A']/@class"));
 		assertEquals(Styles.PARTLY_COVERED,
 				htmlSupport.findStr(doc, "//pre/span[text() = 'B']/@class"));
+		assertTrue(htmlSupport.findStr(doc, "//pre/span[text() = 'B']/@title")
+				.contains("Executions: 1."));
 		assertEquals(Styles.FULLY_COVERED,
 				htmlSupport.findStr(doc, "//pre/span[text() = 'C']/@class"));
 		assertEquals("",
@@ -111,34 +118,34 @@ public class SourceHighlighterTest {
 
 	@Test
 	public void testHighlightBranchesFC() throws Exception {
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(0, 5),
-				1);
+		source.increment(CounterImpl.COUNTER_0_1, 1,
+				CounterImpl.getInstance(0, 5), 1);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("fc bfc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("All 5 branches covered.",
+		assertEquals("All 5 branches covered. Executions: 1.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 
 	@Test
 	public void testHighlightBranchesPC() throws Exception {
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(2, 3),
-				1);
+		source.increment(CounterImpl.COUNTER_0_1, 1,
+				CounterImpl.getInstance(2, 3), 1);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bpc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("2 of 5 branches missed.",
+		assertEquals("2 of 5 branches missed. Executions: 1.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 
 	@Test
 	public void testHighlightBranchesNC() throws Exception {
-		source.increment(CounterImpl.COUNTER_0_1, CounterImpl.getInstance(5, 0),
-				1);
+		source.increment(CounterImpl.COUNTER_0_1, 1,
+				CounterImpl.getInstance(5, 0), 1);
 		sourceHighlighter.highlight(parent.pre(null), source.getLine(1), 1);
 		final Document doc = parseDoc();
 		assertEquals("pc bnc", htmlSupport.findStr(doc, "//pre/span/@class"));
-		assertEquals("All 5 branches missed.",
+		assertEquals("All 5 branches missed. Executions: 1.",
 				htmlSupport.findStr(doc, "//pre/span/@title"));
 	}
 
